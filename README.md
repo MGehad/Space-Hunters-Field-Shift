@@ -80,9 +80,8 @@ The whole site is available in Arabic with a right-to-left layout.
 
 ### Farm Analysis & Planning
 
-The user moves through seven steps in order:
+The user moves through six steps in order:
 
-**Location & Farm Boundary → Environmental Overview → Farm Information & Crops → Scenario Comparison → Risks & Trade-offs → Uncertainty & Limitations → Decision Summary & Report**
 **Location & Farm Boundary → Environmental Overview → Farm Information & Crops → Scenario Comparison → Risks & Trade-offs → Decision Summary & Report**
 
 1. **Select the location.** Click a point on a satellite map or draw the farm boundary as a polygon. The boundary is validated (at least three points) and its area is calculated on a spherical Earth model. The area can also be entered in hectares or feddans.
