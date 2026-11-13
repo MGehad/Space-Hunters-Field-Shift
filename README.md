@@ -48,8 +48,8 @@
 - Node.js 18+ installed
 
 ### Live Demo & Links
-- 🌐 **Live Website (Vercel):** [https://space-hunters-five.vercel.app](https://space-hunters-five.vercel.app)
-- 📂 **GitHub Repository:** [https://github.com/AhmedSalah-26/space-hunters](https://github.com/AhmedSalah-26/space-hunters)
+- 🌐 **Live Website (Vercel):** [https://space-hunters-field-shift.vercel.app](https://space-hunters-field-shift.vercel.app)
+- 📂 **GitHub Repository:** [https://github.com/MGehad/Space-Hunters-Field-Shift](https://github.com/MGehad/Space-Hunters-Field-Shift)
 
 ### Installation
 ```bash
