@@ -215,6 +215,7 @@ tests/                 Unit tests
 | Mohamed Gehad Hussien Metwali | Front-end development, UI/UX and testing |
 | Ahmed Mohamed Salah El-Din Abdul Khaleq | Front-end development, testing and localization |
 | Ibrahim Mohamed Asker | Agricultural research |
+| Ahmed Elsaeed Abdullah | Agricultural research & Presenting |
 
 ## References
 
