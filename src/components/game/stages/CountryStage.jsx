@@ -45,7 +45,7 @@ export default function CountryStage({ mission }) {
     hideMetrics: true,
     title: mission ? (ar ? mission.titleAr : mission.titleEn) : (ar ? `التحدي: ${game.challengeAr}` : `Challenge: ${game.challengeEn}`),
     intro: mission ? `${ar ? game.introAr : game.introEn} ${ar ? mission.problemAr : mission.problemEn}` : (ar ? game.introAr : game.introEn),
-    startLabel: ar ? 'لقاء المزارع' : 'Meet the farmer',
+    startLabel: ar ? 'بدء الاستشارة' : 'Start the consultation',
   }), [mission, game, ar]);
 
   return (

@@ -19,8 +19,8 @@ export const egyptMission = {
   titleEn: "Water Scarcity & Nile Delta Crop Rotation",
   heroImage: "/images/egypt_pyramids.jpg",
   farmerImage: "/images/farmer_egypt.jpg",
-  farmerNameAr: "عم إبراهيم",
-  farmerNameEn: "Uncle Ibrahim",
+  farmerNameAr: "المهندس أحمد",
+  farmerNameEn: "Ahmed",
   mapCoords: {
     x: 58,
     y: 44

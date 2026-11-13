@@ -14,7 +14,7 @@ export const POWER_FIRST_YEAR = 1981;
 
 export const POWER_VARIABLES = Object.freeze({
   T2M: { field: 'tMean', required: true, nameEn: 'Mean air temperature at 2 m', nameAr: 'متوسط حرارة الهواء' },
-  PRECTOTCORR: { field: 'rainMm', required: true, nameEn: 'Precipitation (bias-corrected)', nameAr: 'الهطول' },
+  PRECTOTCORR: { field: 'rainMm', required: true, nameEn: 'Precipitation (bias-corrected)', nameAr: 'معدل هطول الأمطار' },
   T2M_MAX: { field: 'tMax', required: false, nameEn: 'Highest air temperature at 2 m in the month', nameAr: 'أعلى درجة حرارة في الشهر' },
   GWETROOT: { field: 'soilWetness', required: false, nameEn: 'Root-zone soil wetness (0–1, modeled)', nameAr: 'رطوبة منطقة الجذور (من 0 إلى 1)' },
 });

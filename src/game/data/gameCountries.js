@@ -20,7 +20,7 @@ export const GAME_COUNTRIES = Object.freeze({
   egypt: {
     id: 'egypt',
     introEn: 'Egypt receives very little rain, so almost all of its farmland depends on irrigation water from the Nile.',
-    introAr: 'الهطول في مصر قليل جدًا، ولذلك تعتمد الأراضي الزراعية تقريبًا كلها على مياه النيل والري.',
+    introAr: 'الأمطار في مصر قليلة جدًا، ولذلك تعتمد الأراضي الزراعية تقريبًا كلها على مياه النيل والري.',
     challengeEn: 'Water scarcity', challengeAr: 'ندرة المياه',
     regions: [
       region({ id: 'nile-delta', nameEn: 'Nile Delta', nameAr: 'دلتا النيل', latitude: 30.8, longitude: 31.0,
@@ -29,15 +29,15 @@ export const GAME_COUNTRIES = Object.freeze({
         suggestions: [{ cropId: 'wheat', plantingMonth: 11 }, { cropId: 'maize', plantingMonth: 5 }, { cropId: 'sorghum', plantingMonth: 5 }] }),
     ],
     script: [
-      { speaker: 'farmer', textEn: 'Welcome! I farm a small plot in the Delta. Wheat in winter, then maize or rice in summer — the same as my father did.', textAr: 'مرحبًا! أنا مزارع أملك قطعة أرض صغيرة في الدلتا: أزرع القمح شتاءً، ثم الذرة أو الأرز صيفًا كما كان يفعل والدي.' },
-      { speaker: 'farmer', textEn: 'Our problem is simple to say and hard to solve: it almost never rains here. Every crop lives on canal water, and my turn at the canal is limited.', textAr: 'مشكلتنا واضحة لكن حلها صعب: لا تكاد تمطر هنا، والمحاصيل كلها تعتمد على مياه الترعة، وحصتي من مناوبة الري محدودة.' },
-      { speaker: 'assistant', textEn: 'That is the key idea for this experiment. When rain is close to zero, nearly all of the water a crop needs has to be supplied by irrigation — so how much you apply, and how efficiently, decides the outcome.', textAr: 'هذه هي الفكرة الأساسية في التجربة. عندما يكون الهطول شبه معدوم، يجب أن يعوّض الري معظم احتياج المحصول؛ فتحدد كمية المياه وكفاءة طريقة الري النتيجة.' },
-      { speaker: 'assistant', textEn: 'We will load monthly temperature and rainfall for the season you choose from NASA POWER, then estimate the crop\'s water need from it. I will always tell you which numbers are data and which are estimates.', textAr: 'سنحمّل حرارة وهطول كل شهر في الموسم الذي تختاره من NASA POWER، ونحسب منهما الاحتياج المائي للمحصول. وسأوضح دائمًا ما هو بيانات فعلية وما هو تقدير.' },
-      { speaker: 'farmer', textEn: 'Here is my challenge for you: grow a good crop with as little canal water as you can. Ask me anything before we start.', textAr: 'والتحدي هو تحقيق محصول جيد بأقل كمية من مياه الترعة. اطرح أي سؤال قبل أن نبدأ.' },
+      { speaker: 'farmer', textEn: 'Welcome. I am an agricultural engineer working with farms in the Nile Delta. A typical holding here grows wheat in winter, then maize or rice in summer.', textAr: 'أهلًا بك. أنا مهندس زراعي أعمل مع مزارع دلتا النيل. تزرع المزرعة النموذجية هنا القمح شتاءً، ثم الذرة أو الأرز صيفًا.' },
+      { speaker: 'farmer', textEn: 'The main constraint is clear: it almost never rains here. Every crop depends on canal water, and each farm\'s share of the irrigation rotation is limited.', textAr: 'القيد الأساسي هنا واضح: الأمطار شبه معدومة، وتعتمد المحاصيل كلها على مياه الترع، وحصة كل مزرعة من مناوبات الري محدودة.' },
+      { speaker: 'assistant', textEn: 'That is the key idea for this experiment. When rain is close to zero, nearly all of the water a crop needs has to be supplied by irrigation — so how much you apply, and how efficiently, decides the outcome.', textAr: 'هذه هي الفكرة الأساسية في التجربة. عندما تكون الأمطار شبه معدومة، يجب أن يعوّض الري معظم احتياج المحصول؛ فتحدد كمية المياه وكفاءة طريقة الري النتيجة.' },
+      { speaker: 'assistant', textEn: 'We will load monthly temperature and rainfall for the season you choose from NASA POWER, then estimate the crop\'s water need from it. I will always tell you which numbers are data and which are estimates.', textAr: 'سنحمّل بيانات الحرارة والأمطار لكل شهر في الموسم الذي تختاره من NASA POWER، ونحسب منهما الاحتياج المائي للمحصول. وسأوضح دائمًا ما هو بيانات فعلية وما هو تقدير.' },
+      { speaker: 'farmer', textEn: 'The question for this case: how can the farm get a good crop with as little canal water as possible? Ask me anything before we start.', textAr: 'السؤال في هذه الحالة: كيف تحقق المزرعة إنتاجًا جيدًا بأقل كمية ممكنة من مياه الري؟ اطرح ما تشاء من أسئلة قبل أن نبدأ.' },
     ],
     farmerQuestions: [
-      { id: 'grow', qEn: 'What do farmers grow here, and when?', qAr: 'ماذا يزرع المزارعون هنا ومتى؟', aEn: 'Winter crops such as wheat are sown around November. Summer crops such as maize and rice go in around May. Rice gives a good income but keeps the field flooded.', aAr: 'تُزرع المحاصيل الشتوية كالقمح في نوفمبر تقريبًا، والصيفية كالذرة والأرز في مايو. الأرز مجزٍ لكنه يتطلب بقاء الحقل مغمورًا.' },
-      { id: 'worry', qEn: 'What worries you most?', qAr: 'ما أكثر ما يقلقك؟', aEn: 'Summer. The heat is strong, the crop is thirsty, and everyone along the canal needs water at the same time.', aAr: 'الصيف. تشتد الحرارة ويزداد احتياج المحاصيل للماء، ويريد جميع المزارعين على الترعة الري في الوقت نفسه.' },
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'Winter crops such as wheat are sown around November. Summer crops such as maize and rice go in around May. Rice gives a good income but keeps the field flooded.', aAr: 'تُزرع المحاصيل الشتوية كالقمح في نوفمبر تقريبًا، والصيفية كالذرة والأرز في مايو. الأرز مجزٍ لكنه يتطلب بقاء الحقل مغمورًا.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'Summer. Heat is high, crop water demand peaks, and every farm along the canal needs water at the same time.', aAr: 'فصل الصيف: ترتفع الحرارة ويبلغ احتياج المحاصيل للمياه ذروته، وتحتاج كل المزارع على الترعة إلى الري في الوقت نفسه.' },
     ],
   },
   india: {
@@ -52,15 +52,15 @@ export const GAME_COUNTRIES = Object.freeze({
         suggestions: [{ cropId: 'wheat', plantingMonth: 11 }, { cropId: 'rice', plantingMonth: 6 }, { cropId: 'maize', plantingMonth: 6 }] }),
     ],
     script: [
-      { speaker: 'farmer', textEn: 'Namaste! Here we sow when the monsoon arrives in June. Sorghum, soybean, cotton — all of it waits for the first good rain.', textAr: 'مرحبًا! نزرع هنا مع بدء الأمطار الموسمية في يونيو: الذرة الرفيعة وفول الصويا والقطن، وكلها تنتظر أول مطر جيد.' },
-      { speaker: 'farmer', textEn: 'Some years the rain is generous. Some years it comes late or stops for weeks in the middle of the season, and most of us have no well to fall back on.', textAr: 'في بعض الأعوام تكون الأمطار وفيرة، وفي أعوام أخرى تتأخر أو تنقطع أسابيع في منتصف الموسم، ومعظمنا لا يملك بئرًا للري.' },
+      { speaker: 'farmer', textEn: 'Namaste. I am an agricultural engineer advising rainfed farms in this area. Sowing starts when the monsoon arrives in June: sorghum, soybean and cotton all wait for the first good rain.', textAr: 'مرحبًا. أنا مهندس زراعي أقدّم الاستشارات للمزارع المطرية في هذه المنطقة. تبدأ الزراعة مع وصول الأمطار الموسمية في يونيو، فالذرة الرفيعة وفول الصويا والقطن كلها تنتظر أول مطر جيد.' },
+      { speaker: 'farmer', textEn: 'In some years the rain is generous. In others it comes late or stops for weeks mid-season, and most farms here have no well to fall back on.', textAr: 'في بعض الأعوام تكون الأمطار وفيرة، وفي أعوام أخرى تتأخر أو تنقطع أسابيع في منتصف الموسم، ومعظم المزارع هنا لا تملك بئرًا للري.' },
       { speaker: 'assistant', textEn: 'So the same crop, planted in the same month, can face very different seasons. In this game you can run one year, then another, and compare what the rainfall record shows.', textAr: 'أي أن المحصول نفسه في الشهر نفسه قد يمر بأعوام مختلفة تمامًا. يمكنك هنا تجربة عام ثم عام آخر ومقارنة الأمطار.' },
       { speaker: 'assistant', textEn: 'Monthly totals hide dry spells inside a month, so treat the result as a broad picture rather than a day-by-day account.', textAr: 'المجاميع الشهرية لا تُظهر فترات الجفاف داخل الشهر، فاعتبر النتيجة صورة عامة لا تفصيلًا يوميًا.' },
-      { speaker: 'farmer', textEn: 'My challenge: choose a crop and a plan that can cope with both a kind monsoon and a weak one.', textAr: 'التحدي: اختر محصولًا وخطة تتحمّلان عامًا جيد الأمطار وعامًا ضعيفها.' },
+      { speaker: 'farmer', textEn: 'The question for this case: which crop and plan can cope with both a good monsoon and a weak one?', textAr: 'السؤال في هذه الحالة: ما المحصول والخطة اللذان يتحمّلان عامًا جيد الأمطار وعامًا ضعيفها؟' },
     ],
     farmerQuestions: [
-      { id: 'grow', qEn: 'What do farmers grow here, and when?', qAr: 'ماذا يزرع المزارعون هنا ومتى؟', aEn: 'The rainy-season crops go in around June. Where there is stored water or a well, a cool-season crop such as wheat follows around November.', aAr: 'تُزرع المحاصيل المطرية في يونيو تقريبًا. ومن يملك مياهًا مخزَّنة أو بئرًا يزرع القمح شتاءً في نوفمبر.' },
-      { id: 'worry', qEn: 'What worries you most?', qAr: 'ما أكثر ما يقلقك؟', aEn: 'A break in the rain when the crop is flowering. A few dry weeks then can undo a good start.', aAr: 'انقطاع المطر أثناء التزهير. بضعة أسابيع جافة حينها قد تُفسد الموسم كله.' },
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'The rainy-season crops go in around June. Where there is stored water or a well, a cool-season crop such as wheat follows around November.', aAr: 'تُزرع المحاصيل المطرية في يونيو تقريبًا. ومن يملك مياهًا مخزَّنة أو بئرًا يزرع القمح شتاءً في نوفمبر.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'A break in the rain when the crop is flowering. A few dry weeks then can undo a good start.', aAr: 'انقطاع الأمطار أثناء التزهير؛ فبضعة أسابيع جافة حينها قد تُفسد موسمًا بدأ جيدًا.' },
     ],
   },
   usa: {
@@ -75,15 +75,15 @@ export const GAME_COUNTRIES = Object.freeze({
         suggestions: [{ cropId: 'sorghum', plantingMonth: 6 }, { cropId: 'maize', plantingMonth: 5 }, { cropId: 'sunflower', plantingMonth: 6 }] }),
     ],
     script: [
-      { speaker: 'farmer', textEn: 'Hi there! We plant corn and soybeans in May and count on summer rain. Most fields around here have no irrigation at all.', textAr: 'مرحبًا! نزرع الذرة وفول الصويا في مايو ونعتمد على أمطار الصيف، ومعظم الأراضي هنا غير مروية أصلًا.' },
-      { speaker: 'farmer', textEn: 'In a normal year that works well. But when July turns hot and dry just as the corn is flowering, there is not much a farmer can do.', textAr: 'في العام المعتاد تسير الأمور جيدًا. لكن إذا جاء يوليو حارًّا جافًّا وقت تزهير الذرة، فليس بيد المزارع ما يفعله.' },
+      { speaker: 'farmer', textEn: 'Hello. I am an agricultural engineer working with corn and soybean farms in the Midwest. They plant in May and rely on summer rain; most fields here are not irrigated.', textAr: 'مرحبًا. أنا مهندس زراعي أعمل مع مزارع الذرة وفول الصويا في الغرب الأوسط. تُزرع هذه المحاصيل في مايو وتعتمد على أمطار الصيف، ومعظم الحقول هنا غير مروية.' },
+      { speaker: 'farmer', textEn: 'In a normal year that works well. But when July turns hot and dry just as the corn is flowering, there is little a rainfed farm can do.', textAr: 'في العام المعتاد تسير الأمور جيدًا. لكن إذا جاء يوليو حارًّا جافًّا وقت تزهير الذرة، فلا تملك المزرعة المطرية خيارات كثيرة.' },
       { speaker: 'assistant', textEn: 'This is a good place to see how timing matters. A crop uses the most water in mid-season, so a dry month then costs more than a dry month early on.', textAr: 'هنا تتضح أهمية التوقيت. يبلغ استهلاك المحصول للماء ذروته في منتصف الموسم، فإذا حلّ الجفاف حينها كانت الخسارة أكبر كثيرًا منها في بداية الموسم.' },
       { speaker: 'assistant', textEn: 'The model also carries soil water from month to month, so spring rain stored in the soil can help the crop through part of a dry spell.', textAr: 'ينقل الحساب كذلك مخزون ماء التربة من شهر إلى الذي يليه، فأمطار الربيع المخزَّنة قد تسند المحصول بعض الوقت إذا حلّ الجفاف فجأة.' },
-      { speaker: 'farmer', textEn: 'My challenge: try a dry year and a wetter year and tell me what difference the season made.', textAr: 'التحدي: جرّب عامًا جافًّا وعامًا أوفر أمطارًا، ولاحظ الفرق في الموسم.' },
+      { speaker: 'farmer', textEn: 'The question for this case: compare a dry year with a wetter one and identify what the season itself changed.', textAr: 'السؤال في هذه الحالة: قارن عامًا جافًّا بعام أوفر أمطارًا، وحدّد الفرق الذي أحدثه الموسم نفسه.' },
     ],
     farmerQuestions: [
-      { id: 'grow', qEn: 'What do farmers grow here, and when?', qAr: 'ماذا يزرع المزارعون هنا ومتى؟', aEn: 'Corn and soybeans, planted in spring and harvested in autumn. Further west, where it is drier, sorghum and sunflower are common.', aAr: 'تُزرع الذرة وفول الصويا في الربيع وتُحصدان في الخريف. وفي الغرب الأكثر جفافًا تُزرع الذرة الرفيعة ودوّار الشمس.' },
-      { id: 'worry', qEn: 'What worries you most?', qAr: 'ما أكثر ما يقلقك؟', aEn: 'A hot, dry stretch in July. That is when corn sets its kernels.', aAr: 'موجة حر وجفاف في يوليو، لأنه وقت تكوين الحبوب في كيزان الذرة.' },
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'Corn and soybeans, planted in spring and harvested in autumn. Further west, where it is drier, sorghum and sunflower are common.', aAr: 'تُزرع الذرة وفول الصويا في الربيع وتُحصدان في الخريف. وفي الغرب الأكثر جفافًا تُزرع الذرة الرفيعة ودوّار الشمس.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'A hot, dry stretch in July. That is when corn sets its kernels.', aAr: 'موجة حر وجفاف في يوليو، لأنه وقت تكوين الحبوب في كيزان الذرة.' },
     ],
   },
   brazil: {
@@ -98,15 +98,15 @@ export const GAME_COUNTRIES = Object.freeze({
         suggestions: [{ cropId: 'soybean', plantingMonth: 10 }, { cropId: 'wheat', plantingMonth: 5 }, { cropId: 'beans', plantingMonth: 9 }] }),
     ],
     script: [
-      { speaker: 'farmer', textEn: 'Olá! We sow soybean when the rains return around October, harvest, and plant maize straight after as a second crop.', textAr: 'مرحبًا! نزرع فول الصويا مع عودة الأمطار في أكتوبر، ثم نحصده ونزرع بعده مباشرة الذرة محصولًا ثانيًا.' },
-      { speaker: 'farmer', textEn: 'The second crop is a race. If it goes in late, the rains end before the maize has finished and it runs short of water.', textAr: 'المحصول الثاني سباق مع الوقت. إذا تأخرت زراعته انتهت الأمطار قبل نضج الذرة فتعرّضت للإجهاد المائي.' },
+      { speaker: 'farmer', textEn: 'Olá. I am an agricultural engineer advising farms in central Brazil. Soybean is sown when the rains return around October, and maize goes in straight after harvest as a second crop.', textAr: 'مرحبًا. أنا مهندس زراعي أقدّم الاستشارات لمزارع وسط البرازيل. يُزرع فول الصويا مع عودة الأمطار في أكتوبر تقريبًا، ثم تُزرع الذرة مباشرة بعد حصاده محصولًا ثانيًا.' },
+      { speaker: 'farmer', textEn: 'The second crop is a race against time. If it is planted late, the rains end before the maize has finished and it runs short of water.', textAr: 'المحصول الثاني سباق مع الوقت. إذا تأخرت زراعته انتهت الأمطار قبل نضج الذرة فتعرّضت للإجهاد المائي.' },
       { speaker: 'assistant', textEn: 'So here the planting month is the big decision. You can move it and watch how the crop\'s thirstiest months line up with the rainy months in the record.', textAr: 'أي أن شهر الزراعة هو القرار الأهم هنا. يمكنك تغييره وملاحظة هل تتوافق أشهر ذروة الاحتياج مع أشهر الأمطار.' },
       { speaker: 'assistant', textEn: 'We are south of the equator, so the seasons are reversed: the warm, rainy months are roughly October to April.', textAr: 'نحن هنا جنوب خط الاستواء فالفصول معكوسة: يمتد الموسم الدافئ الممطر من أكتوبر إلى أبريل تقريبًا.' },
-      { speaker: 'farmer', textEn: 'My challenge: find a planting month that keeps the crop inside the rains.', textAr: 'التحدي: ابحث عن شهر زراعة يجعل الموسم كله ضمن فترة الأمطار.' },
+      { speaker: 'farmer', textEn: 'The question for this case: which planting month keeps the whole crop season inside the rains?', textAr: 'السؤال في هذه الحالة: ما شهر الزراعة الذي يجعل الموسم كله ضمن فترة الأمطار؟' },
     ],
     farmerQuestions: [
-      { id: 'grow', qEn: 'What do farmers grow here, and when?', qAr: 'ماذا يزرع المزارعون هنا ومتى؟', aEn: 'Soybean from about October, then second-crop maize from about February. Further south, wheat is grown in the cooler months.', aAr: 'فول الصويا من أكتوبر تقريبًا، ثم الذرة من فبراير. وفي الجنوب يُزرع القمح في الأشهر الأبرد.' },
-      { id: 'worry', qEn: 'What worries you most?', qAr: 'ما أكثر ما يقلقك؟', aEn: 'Rains that start late. Everything after that is squeezed.', aAr: 'تأخّر الأمطار في بداية الموسم؛ فحينها يضيق الوقت على كل ما يليه.' },
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'Soybean from about October, then second-crop maize from about February. Further south, wheat is grown in the cooler months.', aAr: 'فول الصويا من أكتوبر تقريبًا، ثم الذرة من فبراير. وفي الجنوب يُزرع القمح في الأشهر الأبرد.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'Rains that start late. Everything after that is squeezed.', aAr: 'تأخّر الأمطار في بداية الموسم؛ فحينها يضيق الوقت على كل ما يليه.' },
     ],
   },
   australia: {
@@ -121,15 +121,15 @@ export const GAME_COUNTRIES = Object.freeze({
         suggestions: [{ cropId: 'sorghum', plantingMonth: 11 }, { cropId: 'wheat', plantingMonth: 5 }, { cropId: 'sunflower', plantingMonth: 11 }] }),
     ],
     script: [
-      { speaker: 'farmer', textEn: 'G\'day! We sow wheat in autumn, around May, and it grows through winter on whatever rain we get.', textAr: 'مرحبًا! نزرع القمح في الخريف، في مايو تقريبًا، وينمو شتاءً على ما يهطل من أمطار.' },
-      { speaker: 'farmer', textEn: 'No two years are alike here. One season fills the silos, the next barely covers the seed. Very few of us can irrigate wheat.', textAr: 'لا يتشابه هنا عامان. عام تمتلئ فيه الصوامع، وعام لا يكاد المحصول يغطي ثمن التقاوي، وقلة منا تستطيع ري القمح.' },
+      { speaker: 'farmer', textEn: 'G\'day. I am an agricultural engineer working with wheat farms in eastern Australia. Wheat is sown in autumn, around May, and grows through winter on whatever rain falls.', textAr: 'مرحبًا. أنا مهندس زراعي أعمل مع مزارع القمح في شرق أستراليا. يُزرع القمح في الخريف، في مايو تقريبًا، وينمو خلال الشتاء معتمدًا على ما يهطل من أمطار.' },
+      { speaker: 'farmer', textEn: 'No two years are alike here. One season fills the silos, the next barely covers the seed cost, and very few farms can irrigate wheat.', textAr: 'لا يتشابه هنا عامان: موسم تمتلئ فيه الصوامع، وموسم لا يكاد يغطي تكلفة التقاوي، وقلة من المزارع تستطيع ري القمح.' },
       { speaker: 'assistant', textEn: 'This is a rainfed challenge. Try the same crop and month in several years and you will see how much the season itself changes the modeled result.', textAr: 'هذا هو تحدي الزراعة المطرية. جرّب المحصول نفسه والشهر نفسه في عدة أعوام، وسترى كيف يغيّر المناخ وحده النتيجة.' },
       { speaker: 'assistant', textEn: 'We are south of the equator, so winter is June to August and the crop ripens as spring warms up.', textAr: 'نحن جنوب خط الاستواء، فالشتاء من يونيو إلى أغسطس، وينضج القمح مع دفء الربيع.' },
-      { speaker: 'farmer', textEn: 'My challenge: learn what a dry year looks like in the record, and what — if anything — you could have done about it.', textAr: 'التحدي: لاحظ كيف يظهر العام الجاف في البيانات، وهل كان بالإمكان تغيير شيء فيه.' },
+      { speaker: 'farmer', textEn: 'The question for this case: what does a dry year look like in the record, and could anything have been done differently?', textAr: 'السؤال في هذه الحالة: كيف يظهر العام الجاف في البيانات، وهل كان من الممكن اتخاذ قرار مختلف؟' },
     ],
     farmerQuestions: [
-      { id: 'grow', qEn: 'What do farmers grow here, and when?', qAr: 'ماذا يزرع المزارعون هنا ومتى؟', aEn: 'Wheat, barley and canola sown in autumn. Further north, summer crops such as sorghum are sown around November.', aAr: 'القمح والشعير والكانولا في الخريف. وفي الشمال تُزرع محاصيل صيفية كالذرة الرفيعة في نوفمبر.' },
-      { id: 'worry', qEn: 'What worries you most?', qAr: 'ما أكثر ما يقلقك؟', aEn: 'A dry spring. The crop is at its thirstiest just when the rain often tails off.', aAr: 'أن يكون الربيع جافًّا؛ فهو وقت ذروة احتياج المحصول للماء مع تراجع الأمطار.' },
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'Wheat, barley and canola sown in autumn. Further north, summer crops such as sorghum are sown around November.', aAr: 'القمح والشعير والكانولا في الخريف. وفي الشمال تُزرع محاصيل صيفية كالذرة الرفيعة في نوفمبر.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'A dry spring. The crop is at its thirstiest just when the rain often tails off.', aAr: 'أن يكون الربيع جافًّا؛ فهو وقت ذروة احتياج المحصول للماء مع تراجع الأمطار.' },
     ],
   },
 });

@@ -72,3 +72,16 @@ test('scenario totals and comparison', () => {
   assert.equal(c.totals.irrigationNeedMm, null);
   assert.equal(compareScenarios([a, c]).lowestIrrigationId, null);
 });
+
+test('no ranking when any compared scenario is incomplete', () => {
+  const seasons = [{ plantingMonth: 10, seasonDays: 120 }, { plantingMonth: 4, seasonDays: 120 }];
+  const a = evaluateScenario({ id: 'a', name: 'A', crops: [crop('winter_wheat'), crop('summer_corn')], seasons, months: flat(22, 100), basis: 'x' });
+  const b = evaluateScenario({ id: 'b', name: 'B', crops: [crop('winter_wheat'), crop('sunflower')], seasons, months: flat(22, 100), basis: 'x' });
+  const pending = evaluateScenario({ id: 'p', name: 'P', crops: [crop('winter_wheat'), crop('summer_corn')], seasons: [seasons[0], { plantingMonth: null, seasonDays: 120 }], months: flat(22, 100), basis: 'x' });
+  assert.equal(pending.complete, false);
+  assert.equal(pending.totals.irrigationNeedMm, null); // missing data is never treated as zero
+  const cmp = compareScenarios([a, b, pending]);
+  assert.equal(cmp.lowestIrrigationId, null);
+  assert.equal(cmp.highestIrrigationId, null);
+  assert.equal(compareScenarios([a]).lowestIrrigationId, null);
+});

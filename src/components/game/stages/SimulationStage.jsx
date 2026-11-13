@@ -65,12 +65,12 @@ export default function SimulationStage({ country, crop, season, simulation }) {
       <div className="grid gap-4 lg:grid-cols-2">
         <section aria-labelledby="observed-title" className="surface-card space-y-3 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 id="observed-title" className="flex items-center gap-2 text-card-title font-semibold text-white"><Thermometer aria-hidden="true" className="h-5 w-5 text-sky-300" />{ar ? 'الحرارة والهطول' : 'Environmental conditions'}</h3>
+            <h3 id="observed-title" className="flex items-center gap-2 text-card-title font-semibold text-white"><Thermometer aria-hidden="true" className="h-5 w-5 text-sky-300" />{ar ? 'الحرارة والأمطار' : 'Environmental conditions'}</h3>
             <DataTag kind="observed" lang={lang} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Stat label={ar ? 'متوسط الحرارة' : 'Mean temperature'} value={fmt(month.tMean)} unit="°C" hint={previous ? `${ar ? 'الشهر السابق' : 'previous month'}: ${fmt(previous.tMean)} °C` : null} />
-            <Stat label={ar ? 'الهطول' : 'Precipitation'} value={fmt(month.rainMm)} unit={mm} hint={previous ? `${ar ? 'الشهر السابق' : 'previous month'}: ${fmt(previous.rainMm)} ${mm}` : null} />
+            <Stat label={ar ? 'كمية الأمطار' : 'Precipitation'} value={fmt(month.rainMm)} unit={mm} hint={previous ? `${ar ? 'الشهر السابق' : 'previous month'}: ${fmt(previous.rainMm)} ${mm}` : null} />
             <Stat label={ar ? 'أعلى حرارة في الشهر' : 'Highest temperature in the month'} value={month.tMax === null ? (ar ? 'غير متاحة' : 'not available') : fmt(month.tMax)} unit={month.tMax === null ? null : '°C'} />
             <Stat label={ar ? 'رطوبة منطقة الجذور (0–1)' : 'Root-zone wetness (0–1)'} value={month.soilWetness === null ? (ar ? 'غير متاحة' : 'not available') : fmt(month.soilWetness, 2)} hint={ar ? 'تقدير من MERRA-2' : 'modeled by MERRA-2'} />
           </div>
@@ -91,7 +91,7 @@ export default function SimulationStage({ country, crop, season, simulation }) {
         </section>
       </div>
 
-      <section aria-label={ar ? 'شرح المزارع والمساعد' : 'Character comments'} aria-live="polite" className="space-y-3">
+      <section aria-label={ar ? 'تعليق المهندس ومساعدة البيانات' : 'Engineer and data guide comments'} aria-live="polite" className="space-y-3">
         {comments.map((comment, i) => <CharacterMessage key={`${month.key}-${i}`} speaker={comment.speaker} countryId={country.id} lang={lang} compact>{ar ? comment.ar : comment.en}</CharacterMessage>)}
       </section>
 

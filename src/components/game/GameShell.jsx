@@ -52,7 +52,7 @@ function GameInner() {
   const lastMonth = simulation?.ok ? simulation.months.length - 1 : 0;
   const gate = {
     country: { ok: Boolean(country), hintEn: 'Select a country on the map.', hintAr: 'اختر بلدًا من الخريطة.' },
-    farmer: { ok: state.conversation.step >= scriptLength - 1, hintEn: 'Finish the conversation (or skip it) to continue.', hintAr: 'أكمل الحوار مع المزارع (أو تخطَّه) للمتابعة.' },
+    farmer: { ok: state.conversation.step >= scriptLength - 1, hintEn: 'Finish the consultation (or skip it) to continue.', hintAr: 'أكمل الاستشارة (أو تخطَّها) للمتابعة.' },
     setup: { ok: Boolean(simulation?.ok), hintEn: 'Choose a crop and a period with available NASA data.', hintAr: 'اختر محصولًا وفترة تتوافر لهما بيانات من ناسا.' },
     decisions: { ok: Boolean(simulation?.ok), hintEn: '', hintAr: '' },
     simulation: { ok: Boolean(simulation?.ok) && state.simMonth >= lastMonth, hintEn: 'Step through every month to open the report.', hintAr: 'استعرض جميع الأشهر لفتح التقرير.' },

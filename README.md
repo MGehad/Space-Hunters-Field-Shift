@@ -83,6 +83,7 @@ The whole site is available in Arabic with a right-to-left layout.
 The user moves through seven steps in order:
 
 **Location & Farm Boundary → Environmental Overview → Farm Information & Crops → Scenario Comparison → Risks & Trade-offs → Uncertainty & Limitations → Decision Summary & Report**
+**Location & Farm Boundary → Environmental Overview → Farm Information & Crops → Scenario Comparison → Risks & Trade-offs → Decision Summary & Report**
 
 1. **Select the location.** Click a point on a satellite map or draw the farm boundary as a polygon. The boundary is validated (at least three points) and its area is calculated on a spherical Earth model. The area can also be entered in hectares or feddans.
 2. **Collect environmental data.** The application requests climate, vegetation, evapotranspiration and soil data for the farm point (see [Data sources](#data-sources)).
@@ -90,7 +91,7 @@ The user moves through seven steps in order:
 4. **Describe the crops.** Enter the existing rotation and two alternatives from a catalog of ten field crops. Each crop has published FAO values: indicative seasonal water need, growing period and optimum temperature range, plus its plant family.
 5. **Score the rotations.** Each rotation gets a score from 0 to 100 from four weighted criteria: lower crop water need, nitrogen-fixing potential (share of legumes), crop-family diversity and potential pest-cycle breaks. The weights can be changed. Criteria with no reliable data are shown as "not scored".
 6. **Compare scenarios with the climate.** For each crop season, set a planting month and season length, and choose the long-term average or a specific recent year. Field Shift sums the season rainfall, converts it to effective rainfall, and subtracts it from the crop water need to give an indicative irrigation range in mm and m³/ha. It also checks whether the season's mean temperature is inside the crop's optimum range.
-7. **Report risks, limits and the decision.** The risk step lists the available evidence for water, heat and vegetation stress without giving probabilities. The uncertainty step describes how complete the data are. The decision summary exports everything as a report.
+7. **Report risks, limits and the decision.** The risk step lists the available evidence for water, heat and vegetation stress without giving probabilities. The same step shows a short note on how complete the data are. The decision summary exports everything as a report.
 
 **Effective rainfall (FAO):**
 

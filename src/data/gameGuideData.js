@@ -19,7 +19,7 @@ export const gameGuideHeader = {
 export const gameGuideHero = {
   titleAr: 'ما فكرة المهام التعليمية؟',
   titleEn: 'What are the educational missions?',
-  descAr: 'تزرع محصولًا خلال موسم وقع فعلًا في بلد حقيقي، باستخدام حرارة وهطول كل شهر من سجل NASA POWER. تتخذ قرارات الري، وتتابع الموسم شهرًا بشهر، ثم تراجع تقريرًا يمكن مقارنته بتجارب أخرى. النتائج تقديرات تعليمية مبنية على طرائق الفاو، وليست تنبؤًا بالإنتاجية.',
+  descAr: 'تزرع محصولًا خلال موسم وقع فعلًا في بلد حقيقي، باستخدام بيانات الحرارة والأمطار لكل شهر من سجل NASA POWER. تتخذ قرارات الري، وتتابع الموسم شهرًا بشهر، ثم تراجع تقريرًا يمكن مقارنته بتجارب أخرى. النتائج تقديرات تعليمية مبنية على طرائق الفاو، وليست تنبؤًا بالإنتاجية.',
   descEn: 'You grow a crop through a season that really happened in a real country, using each month\'s temperature and rain from the NASA POWER record. You make the irrigation decisions, follow the season month by month, and end with a report you can compare with other runs. Results are educational estimates from FAO methods, not yield forecasts.',
 };
 
@@ -49,9 +49,9 @@ export const gameGuideSteps = [
   },
   {
     num: '2', icon: MessageSquare,
-    titleAr: 'لقاء المزارع', titleEn: 'Meet the farmer',
-    descAr: 'اقرأ ما يعرضه المزارع ومساعد البيانات، واطرح الأسئلة المعدّة للتعرّف إلى الموقع ومواسمه. الحوار مكتوب لأغراض تعليمية وليس بيانًا صادرًا عن ناسا.',
-    descEn: 'Read what the farmer and the data assistant say, and ask the prepared questions to learn about the place and its seasons. The dialogue is written for teaching and is not a NASA statement.',
+    titleAr: 'الاستشارة الميدانية', titleEn: 'Local consultation',
+    descAr: 'اقرأ ما يعرضه المهندس الزراعي المحلي ومساعدة البيانات، واطرح الأسئلة المعدّة للتعرّف إلى الموقع ومواسمه. الحوار مكتوب لأغراض تعليمية وليس بيانًا صادرًا عن ناسا.',
+    descEn: 'Read the case presented by the local agricultural engineer and the data guide, and ask the prepared questions to learn about the place and its seasons. The dialogue is written for teaching and is not a NASA statement.',
   },
   {
     num: '3', icon: Sprout,
@@ -68,8 +68,8 @@ export const gameGuideSteps = [
   {
     num: '5', icon: CalendarRange,
     titleAr: 'متابعة الموسم شهرًا بشهر', titleEn: 'Follow the season month by month',
-    descAr: 'تُعرض لكل شهر الحرارة والهطول من POWER، والاحتياج المائي للمحصول، والأمطار الفعّالة، والري، والإجهاد المائي إن وُجد، مع شرح من المزارع والمساعد.',
-    descEn: 'For each month you see POWER temperature and rain, the crop\'s water need, useful rain, irrigation and any water stress, explained by the farmer and the assistant.',
+    descAr: 'تُعرض لكل شهر الحرارة وكمية الأمطار من POWER، والاحتياج المائي للمحصول، والأمطار الفعّالة، والري، والإجهاد المائي إن وُجد، مع تعليق من المهندس الزراعي ومساعدة البيانات.',
+    descEn: 'For each month you see POWER temperature and rain, the crop\'s water need, useful rain, irrigation and any water stress, explained by the local engineer and the data guide.',
   },
   {
     num: '6', icon: FileBarChart,

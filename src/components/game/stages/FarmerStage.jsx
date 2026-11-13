@@ -41,7 +41,7 @@ export default function FarmerStage({ country }) {
             <img src={who.avatar} alt="" width="48" height="48" decoding="async" className={`h-12 w-12 shrink-0 rounded-full border-2 object-cover ${who.tone === 'farmer' ? 'border-amber-400/70' : 'border-cyan-400/70'}`} />
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white">{who.name}</p>
-              <p className="text-xs text-slate-300">{who.role} — {who.tone === 'farmer' ? (ar ? 'يعرض واقع الزراعة في المنطقة' : 'explains farming here') : (ar ? 'تشرح البيانات والمفاهيم' : 'explains the data and ideas')}</p>
+              <p className="text-xs text-slate-300">{who.role} — {who.tone === 'farmer' ? (ar ? 'يعرض الحالة الزراعية في المنطقة' : 'presents the local farming case') : (ar ? 'تشرح البيانات والمفاهيم' : 'explains the data and ideas')}</p>
             </div>
           </div>
         ))}

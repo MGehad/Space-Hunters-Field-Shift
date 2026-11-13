@@ -112,10 +112,12 @@ export function evaluateScenario({ id, name, crops, seasons, months, basis }) {
 
 /** Plain, supported differences between scenarios (no ranking is implied where data are missing). */
 export function compareScenarios(scenarios = []) {
+  // A ranking is only fair when every scenario being compared has a complete irrigation estimate.
   const withWater = scenarios.filter((s) => s.totals.irrigationNeedMm);
+  const allComparable = scenarios.length > 1 && withWater.length === scenarios.length;
   const mid = (range) => (range[0] + range[1]) / 2;
-  const lowestIrrigation = withWater.length > 1 ? withWater.reduce((best, s) => (mid(s.totals.irrigationNeedMm) < mid(best.totals.irrigationNeedMm) ? s : best)) : null;
-  const highestIrrigation = withWater.length > 1 ? withWater.reduce((best, s) => (mid(s.totals.irrigationNeedMm) > mid(best.totals.irrigationNeedMm) ? s : best)) : null;
+  const lowestIrrigation = allComparable ? withWater.reduce((best, s) => (mid(s.totals.irrigationNeedMm) < mid(best.totals.irrigationNeedMm) ? s : best)) : null;
+  const highestIrrigation = allComparable ? withWater.reduce((best, s) => (mid(s.totals.irrigationNeedMm) > mid(best.totals.irrigationNeedMm) ? s : best)) : null;
   const spreadMm = lowestIrrigation && highestIrrigation ? mid(highestIrrigation.totals.irrigationNeedMm) - mid(lowestIrrigation.totals.irrigationNeedMm) : null;
   return { lowestIrrigationId: spreadMm && spreadMm >= 1 ? lowestIrrigation.id : null, highestIrrigationId: spreadMm && spreadMm >= 1 ? highestIrrigation.id : null, spreadMm, comparable: withWater.length };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Check, Lock, MapPinned, Satellite, Sprout, Scale, ShieldAlert, CircleHelp, ClipboardCheck, List } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Lock, MapPinned, Satellite, Sprout, Scale, ShieldAlert, ClipboardCheck, List } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useWorkingSession } from '../context/WorkingSessionContext';
 import FarmProStudio from './farmPro/FarmProStudio';
@@ -14,8 +14,7 @@ const FLOW = [
   { id: 2, title: 'Farm Information & Crops', titleAr: 'بيانات المزرعة والمحاصيل', short: 'Farm & crops', shortAr: 'المزرعة', icon: Sprout },
   { id: 3, title: 'Scenario Comparison', titleAr: 'مقارنة السيناريوهات', short: 'Compare', shortAr: 'المقارنة', icon: Scale },
   { id: 4, title: 'Risks & Trade-offs', titleAr: 'المخاطر والموازنات', short: 'Risks', shortAr: 'المخاطر', icon: ShieldAlert },
-  { id: 5, title: 'Uncertainty & Limitations', titleAr: 'حدود التحليل', short: 'Uncertainty', shortAr: 'الحدود', icon: CircleHelp },
-  { id: 6, title: 'Decision Summary & Report', titleAr: 'ملخص القرار والتقرير', short: 'Summary', shortAr: 'الملخص', icon: ClipboardCheck },
+  { id: 5, title: 'Decision Summary & Report', titleAr: 'ملخص القرار والتقرير', short: 'Summary', shortAr: 'الملخص', icon: ClipboardCheck },
 ];
 const LAST_STEP = FLOW.length - 1;
 
@@ -85,7 +84,7 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
   const current = FLOW[step] || FLOW[0];
   const PreviousIcon = isRtl ? ChevronRight : ChevronLeft;
   const NextIcon = isRtl ? ChevronLeft : ChevronRight;
-  const workbenchSection = ({ 2: 'inputs', 3: 'comparison', 4: 'tradeoffs', 5: 'uncertainty' })[step];
+  const workbenchSection = ({ 2: 'inputs', 3: 'comparison', 4: 'tradeoffs' })[step];
   const num = (value) => (ar ? value.toLocaleString('ar-EG') : String(value));
   const isLocked = (id) => id > maxReached || (id === LAST_STEP && !decisionCurrent);
   const nextBlocked = step === LAST_STEP - 1 && !decisionCurrent;

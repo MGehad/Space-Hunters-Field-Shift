@@ -19,7 +19,7 @@ export const australiaMission = {
   titleEn: "Drought & Soil Salinity in Murray-Darling",
   heroImage: "/images/australia_drought.jpg",
   farmerImage: "/images/farmer_australia.jpg",
-  farmerNameAr: "ماثيو",
+  farmerNameAr: "المهندس ماثيو",
   farmerNameEn: "Mathew",
   mapCoords: {
     x: 82,

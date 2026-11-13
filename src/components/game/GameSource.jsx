@@ -26,7 +26,7 @@ export default function GameSource({ season, region, lang }) {
       url={POWER_MONTHLY_DOCS_URL}
       parameters={[
         ...returned.map((code) => ({ code, name: ar ? POWER_VARIABLES[code].nameAr : POWER_VARIABLES[code].nameEn, unit: data.units?.[code], kind: KIND[code] })),
-        { code: 'PRECTOTCORR × days', name: ar ? 'الهطول الشهري' : 'Monthly precipitation total', unit: 'mm', kind: 'derived' },
+        { code: 'PRECTOTCORR × days', name: ar ? 'كمية الأمطار الشهرية' : 'Monthly precipitation total', unit: 'mm', kind: 'derived' },
       ]}
       notes={[
         ar ? 'القيم تخص خلية شبكية بدقة نصف درجة تقريبًا من نموذج إعادة التحليل MERRA-2، وليست قياسًا داخل حقل بعينه.' : 'Values describe a grid cell about half a degree wide from the MERRA-2 reanalysis; they are not measurements taken in a particular field.',

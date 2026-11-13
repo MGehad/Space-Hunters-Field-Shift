@@ -166,12 +166,12 @@ export default function FarmRecentConditions({ farmLocation, climatology = [], l
 
       {/* 1. NASA POWER: last months compared with the long-term average */}
       <Block icon={CalendarClock} title={ar ? 'الأشهر الأخيرة مقارنةً بالمتوسط طويل الأجل (NASA POWER)' : 'Latest months against the long-term average (NASA POWER)'}
-        subtitle={ar ? `الفرق = قيمة الشهر ناقص متوسط الشهر نفسه${climatologyPeriod ? ` (${climatologyPeriod})` : ''}. الهطول الشهري = المعدل اليومي × عدد أيام الشهر.` : `Difference = the month's value minus the average for the same month${climatologyPeriod ? ` (${climatologyPeriod})` : ''}. Monthly rain = daily rate × days in the month.`}>
+        subtitle={ar ? `الفرق = قيمة الشهر ناقص متوسط الشهر نفسه${climatologyPeriod ? ` (${climatologyPeriod})` : ''}. كمية الأمطار الشهرية = المعدل اليومي × عدد أيام الشهر.` : `Difference = the month's value minus the average for the same month${climatologyPeriod ? ` (${climatologyPeriod})` : ''}. Monthly rain = daily rate × days in the month.`}>
         <Status state={power} ar={ar} loadingText={ar ? 'جارٍ تحميل الأشهر الأخيرة من NASA POWER…' : 'Loading recent months from NASA POWER...'} />
         {power.status === 'ready' && (power.data.recent.length === 0
           ? <p role="status" className="text-sm text-amber-200">{ar ? 'لم تنشر NASA POWER أشهرًا حديثة لهذه النقطة.' : 'NASA POWER has not published recent months for this point.'}</p>
           : <>
-            <Table caption={ar ? 'الأشهر الأخيرة' : 'Recent months'} head={ar ? ['الشهر', 'الحرارة °م', 'الفرق', 'الهطول مم', 'متوسط الهطول مم', 'الفرق'] : ['Month', 'Temp °C', 'vs avg', 'Rain mm', 'Avg rain mm', 'vs avg']}
+            <Table caption={ar ? 'الأشهر الأخيرة' : 'Recent months'} head={ar ? ['الشهر', 'الحرارة °م', 'الفرق', 'كمية الأمطار مم', 'متوسط كمية الأمطار مم', 'الفرق'] : ['Month', 'Temp °C', 'vs avg', 'Rain mm', 'Avg rain mm', 'vs avg']}
               rows={power.data.recent.map((month) => {
                 const monthIndex = Number(month.key.slice(5)) - 1;
                 const normalT = climatologyValue('T2M', monthIndex);
@@ -195,8 +195,8 @@ export default function FarmRecentConditions({ farmLocation, climatology = [], l
               retrievedAt={power.data.retrievedAt} fromCache={power.data.fromCache} url={POWER_MONTHLY_DOCS_URL}
               parameters={[
                 { code: 'T2M', name: ar ? 'متوسط حرارة الهواء' : 'Mean air temperature at 2 m', unit: power.data.units?.T2M, kind: 'modeled' },
-                { code: 'PRECTOTCORR', name: ar ? 'الهطول (مصحَّح)' : 'Precipitation (corrected)', unit: power.data.units?.PRECTOTCORR, kind: 'modeled' },
-                { code: '—', name: ar ? 'الهطول الشهري والفروق' : 'Monthly rain totals and differences', unit: 'mm, °C', kind: 'derived' },
+                { code: 'PRECTOTCORR', name: ar ? 'معدل هطول الأمطار (مصحَّح)' : 'Precipitation (corrected)', unit: power.data.units?.PRECTOTCORR, kind: 'modeled' },
+                { code: '—', name: ar ? 'كمية الأمطار الشهرية والفروق' : 'Monthly rain totals and differences', unit: 'mm, °C', kind: 'derived' },
               ]}
               notes={[ar ? 'شبكة بدقة نصف درجة تقريبًا (عشرات الكيلومترات). الفرق عن المتوسط لا يفسّر بذاته سببًا معيّنًا.' : 'Grid of about half a degree (tens of kilometres). A difference from the average does not by itself explain a cause.']} />
           </>)}
@@ -204,10 +204,10 @@ export default function FarmRecentConditions({ farmLocation, climatology = [], l
 
       {/* 2. ERA5: water balance and soil moisture */}
       <Block icon={Droplets} title={ar ? 'الميزان المائي ورطوبة التربة (ERA5)' : 'Water balance and soil moisture (ERA5)'}
-        subtitle={ar ? 'ET₀ هو التبخر والنتح المرجعي (طريقة الفاو بنمان–مونتيث). الفرق «الهطول − ET₀» يبيّن مدى تغطية الأمطار وحدها لهذا الطلب قبل الري. رطوبة التربة مخرجات نموذج لا يمثّل الري.' : 'ET₀ is reference evapotranspiration (FAO Penman–Monteith). Rain − ET₀ shows how far rain alone covers that demand, before irrigation. Soil moisture is model output that knows nothing about irrigation.'}>
+        subtitle={ar ? 'ET₀ هو التبخر والنتح المرجعي (طريقة الفاو بنمان–مونتيث). الفرق «الأمطار − ET₀» يبيّن مدى تغطية الأمطار وحدها لهذا الطلب قبل الري. رطوبة التربة مخرجات نموذج لا يمثّل الري.' : 'ET₀ is reference evapotranspiration (FAO Penman–Monteith). Rain − ET₀ shows how far rain alone covers that demand, before irrigation. Soil moisture is model output that knows nothing about irrigation.'}>
         <Status state={era5} ar={ar} loadingText={ar ? 'جارٍ تحميل بيانات ERA5…' : 'Loading ERA5 data...'} />
         {era5.status === 'ready' && <>
-          <Table caption="ERA5" head={ar ? ['الشهر', 'الهطول مم', 'ET₀ مم', 'الهطول − ET₀', 'رطوبة التربة 0–7 سم', 'رطوبة التربة 7–28 سم'] : ['Month', 'Rain mm', 'ET₀ mm', 'Rain − ET₀', 'Soil 0–7 cm', 'Soil 7–28 cm']}
+          <Table caption="ERA5" head={ar ? ['الشهر', 'كمية الأمطار مم', 'ET₀ مم', 'الأمطار − ET₀', 'رطوبة التربة 0–7 سم', 'رطوبة التربة 7–28 سم'] : ['Month', 'Rain mm', 'ET₀ mm', 'Rain − ET₀', 'Soil 0–7 cm', 'Soil 7–28 cm']}
             rows={era5.data.months.map((month) => (
               <tr key={month.key} className={month.complete ? '' : 'text-slate-400'}>
                 <td className="px-2 py-1.5">{monthLabel(month.key)}{!month.complete && <span className="block text-xs">{ar ? 'شهر غير مكتمل' : 'incomplete month'}</span>}</td>
@@ -226,11 +226,11 @@ export default function FarmRecentConditions({ farmLocation, climatology = [], l
             period={`${era5.data.request.startDate} → ${era5.data.request.endDate} (${ar ? 'يومي، مجمَّع شهريًا' : 'daily, totalled by month'})`}
             retrievedAt={era5.data.retrievedAt} fromCache={era5.data.fromCache} url={ERA5_DOCS_URL}
             parameters={[
-              { code: 'precipitation_sum', name: ar ? 'الهطول' : 'Precipitation', unit: era5.data.units.precipitation_sum, kind: 'modeled' },
+              { code: 'precipitation_sum', name: ar ? 'كمية الأمطار' : 'Precipitation', unit: era5.data.units.precipitation_sum, kind: 'modeled' },
               { code: 'et0_fao_evapotranspiration', name: ar ? 'ET₀ (محسوب لدى Open-Meteo من بيانات ERA5)' : 'ET₀ (computed by Open-Meteo from ERA5)', unit: era5.data.units.et0_fao_evapotranspiration, kind: 'providerDerived' },
               { code: 'soil_moisture_0_to_7cm_mean', name: ar ? 'رطوبة التربة 0–7 سم' : 'Soil moisture 0–7 cm', unit: era5.data.units.soil_moisture_0_to_7cm_mean, kind: 'modeled' },
               { code: 'soil_moisture_7_to_28cm_mean', name: ar ? 'رطوبة التربة 7–28 سم' : 'Soil moisture 7–28 cm', unit: era5.data.units.soil_moisture_7_to_28cm_mean, kind: 'modeled' },
-              { code: '—', name: ar ? 'المجاميع الشهرية والهطول − ET₀' : 'Monthly totals and Rain − ET₀', unit: 'mm', kind: 'derived' },
+              { code: '—', name: ar ? 'المجاميع الشهرية والأمطار − ET₀' : 'Monthly totals and Rain − ET₀', unit: 'mm', kind: 'derived' },
             ]}
             notes={[
               ar ? 'تُنشر بيانات ERA5 بتأخير نحو 5 أيام. الواجهة المجانية لـOpen-Meteo مخصصة للاستخدام غير التجاري، والبيانات مرخَّصة وفق CC BY 4.0.' : 'ERA5 is published about 5 days behind real time. Open-Meteo’s free API is for non-commercial use; the data are licensed CC BY 4.0.',

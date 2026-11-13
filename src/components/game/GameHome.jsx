@@ -35,7 +35,7 @@ export default function GameHome() {
         <p className="text-xs text-cyan-300">{ar ? 'محاكاة زراعية تعليمية' : 'Educational farming simulation'}</p>
         <h1 className="text-page-title font-semibold text-white">{ar ? 'المهام التعليمية' : 'Educational Missions'}</h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-300 sm:text-base">
-          {ar ? 'اختر بلدًا والتقِ المزارع، ثم ازرع محصولًا خلال موسم حقيقي من بيانات NASA POWER، وتابع أثر قراراتك شهرًا بشهر.' : 'Pick a country, talk to a farmer, then grow a crop through a real historical season from the NASA POWER record and see what your decisions change, month by month.'}
+          {ar ? 'اختر بلدًا واستشر مهندسًا زراعيًا محليًا، ثم ازرع محصولًا خلال موسم حقيقي من بيانات NASA POWER، وتابع أثر قراراتك شهرًا بشهر.' : 'Pick a country, consult a local agricultural engineer, then grow a crop through a real historical season from the NASA POWER record and see what your decisions change, month by month.'}
         </p>
       </header>
 
@@ -54,7 +54,7 @@ export default function GameHome() {
           <Target aria-hidden="true" className="h-5 w-5 text-cyan-300" />
           <h2 id="mode-missions" className="text-section-title font-semibold text-white">{ar ? 'مهام جاهزة' : 'Ready-made missions'}</h2>
         </div>
-        <p className="max-w-3xl text-sm text-slate-300">{ar ? 'موقع وسنة ومحاصيل محددة بهدف تعليمي واضح. تُحمَّل بيانات الحرارة والهطول من NASA POWER أثناء التجربة.' : 'A preset place, year and crop choice with a clear learning goal. Environmental conditions are loaded from NASA POWER when you play.'}</p>
+        <p className="max-w-3xl text-sm text-slate-300">{ar ? 'موقع وسنة ومحاصيل محددة بهدف تعليمي واضح. تُحمَّل بيانات الحرارة والأمطار من NASA POWER أثناء التجربة.' : 'A preset place, year and crop choice with a clear learning goal. Environmental conditions are loaded from NASA POWER when you play.'}</p>
         <ul className="grid gap-3 md:grid-cols-2">
           {GAME_MISSIONS.map((mission) => {
             const region = getRegion(mission.countryId, mission.regionId);

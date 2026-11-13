@@ -42,7 +42,7 @@ export default function CompareView({ standalone = false }) {
   const flag = (id) => missionsData.find((item) => item.id === id)?.flag || '';
 
   const rows = [
-    { label: ar ? 'الهطول (POWER)' : 'Precipitation (POWER)', kind: 'observed', get: (e) => `${fmt(e.totals.rainMm)} ${mm}` },
+    { label: ar ? 'كمية الأمطار (POWER)' : 'Precipitation (POWER)', kind: 'observed', get: (e) => `${fmt(e.totals.rainMm)} ${mm}` },
     { label: ar ? 'متوسط حرارة الموسم (POWER)' : 'Mean season temperature (POWER)', kind: 'observed', get: (e) => `${fmt(e.totals.meanTempC)} °C` },
     { label: ar ? 'الاحتياج المائي للمحصول' : 'Crop water need', kind: 'estimate', get: (e) => `${fmt(e.totals.cropNeedMm)} ${mm}` },
     { label: ar ? 'الأمطار الفعّالة' : 'Usable rain', kind: 'estimate', get: (e) => `${fmt(e.totals.effectiveRainMm)} ${mm}` },
@@ -118,7 +118,7 @@ export default function CompareView({ standalone = false }) {
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="surface-card space-y-2 p-4">
           <DataTag kind="observed" lang={lang} />
-          <MonthChart lang={lang} labels={labels} unit={mm} title={ar ? 'الهطول الشهري منذ الزراعة' : 'Monthly precipitation since planting'}
+          <MonthChart lang={lang} labels={labels} unit={mm} title={ar ? 'كمية الأمطار الشهرية منذ الزراعة' : 'Monthly precipitation since planting'}
             bars={[{ name: nameA, color: CHART_COLORS.a, values: series(a, 'rainMm') }, { name: nameB, color: CHART_COLORS.b, values: series(b, 'rainMm') }]} />
         </section>
         <section className="surface-card space-y-2 p-4">

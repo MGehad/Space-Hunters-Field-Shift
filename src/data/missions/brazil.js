@@ -19,7 +19,7 @@ export const brazilMission = {
   titleEn: "Soil Erosion & Agroforestry Rotations",
   heroImage: "/images/brazil_amazon.jpg",
   farmerImage: "/images/farmer_brazil.jpg",
-  farmerNameAr: "خوسيه",
+  farmerNameAr: "المهندس خوسيه",
   farmerNameEn: "José",
   mapCoords: {
     x: 34,

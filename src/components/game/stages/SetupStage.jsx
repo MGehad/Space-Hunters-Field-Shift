@@ -47,7 +47,7 @@ export default function SetupStage({ country, region, crop, mission, season, sim
   return (
     <div className="space-y-6">
       <CharacterMessage speaker="assistant" countryId={country.id} lang={lang}>
-        {ar ? 'اختر المحصول والفترة. ستُحمَّل حرارة وهطول كل شهر من NASA POWER، وسيُوضَّح أي نقص في البيانات فور ظهوره.' : 'Choose the crop and the period. I will load monthly temperature and precipitation for that period from NASA POWER, and tell you plainly if any of it is unavailable.'}
+        {ar ? 'اختر المحصول والفترة. ستُحمَّل الحرارة والأمطار لكل شهر من NASA POWER، وسيُوضَّح أي نقص في البيانات فور ظهوره.' : 'Choose the crop and the period. I will load monthly temperature and precipitation for that period from NASA POWER, and tell you plainly if any of it is unavailable.'}
       </CharacterMessage>
 
       <section aria-labelledby="setup-region" className="space-y-2">
@@ -122,7 +122,7 @@ export default function SetupStage({ country, region, crop, mission, season, sim
 
       <section aria-labelledby="setup-data" className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="setup-data" className="text-card-title font-semibold text-white">{ar ? '4. الحرارة والهطول المسجَّلان في هذا الموسم' : '4. Recorded conditions for this season'}</h2>
+          <h2 id="setup-data" className="text-card-title font-semibold text-white">{ar ? '4. الحرارة والأمطار المسجَّلة في هذا الموسم' : '4. Recorded conditions for this season'}</h2>
           <DataTag kind="observed" lang={lang} />
         </div>
         <DataStatus season={season} simulation={simulation} lang={lang} />
@@ -131,7 +131,7 @@ export default function SetupStage({ country, region, crop, mission, season, sim
             <div dir="ltr" className="overflow-x-auto rounded-xl border border-white/10">
               <table className="w-full min-w-[26rem] text-sm" dir={ar ? 'rtl' : 'ltr'}>
                 <thead className="bg-white/[0.04] text-xs text-slate-300">
-                  <tr><th className="px-3 py-2 text-start font-medium">{ar ? 'الشهر' : 'Month'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'متوسط الحرارة (°م)' : 'Mean temp. (°C)'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'الهطول (مم)' : 'Precipitation (mm)'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'رطوبة منطقة الجذور' : 'Root-zone wetness'}</th></tr>
+                  <tr><th className="px-3 py-2 text-start font-medium">{ar ? 'الشهر' : 'Month'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'متوسط الحرارة (°م)' : 'Mean temp. (°C)'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'كمية الأمطار (مم)' : 'Precipitation (mm)'}</th><th className="px-3 py-2 text-end font-medium">{ar ? 'رطوبة منطقة الجذور' : 'Root-zone wetness'}</th></tr>
                 </thead>
                 <tbody>
                   {simulation.months.map((month) => (
@@ -147,7 +147,7 @@ export default function SetupStage({ country, region, crop, mission, season, sim
             </div>
             <GameSource season={season} region={region} lang={lang} />
             <div className="space-y-1 text-xs text-slate-400">
-              <p>{ar ? 'الهطول الشهري = المعدل اليومي × عدد أيام الشهر. ورطوبة منطقة الجذور (من 0 إلى 1) للسياق فقط ولا تدخل في الحساب.' : 'Monthly precipitation = the POWER daily rate × days in the month. Root-zone wetness is a 0–1 fraction shown for context only; it is not used in the calculation.'}</p>
+              <p>{ar ? 'كمية الأمطار الشهرية = المعدل اليومي × عدد أيام الشهر. ورطوبة منطقة الجذور (من 0 إلى 1) للسياق فقط ولا تدخل في الحساب.' : 'Monthly precipitation = the POWER daily rate × days in the month. Root-zone wetness is a 0–1 fraction shown for context only; it is not used in the calculation.'}</p>
               {unavailable.length > 0 && <p className="text-amber-200">{ar ? 'بيانات لم تُرجعها POWER في هذا الطلب' : 'Variables POWER did not return for this request'}: {unavailable.map((name) => (ar ? POWER_VARIABLES[name].nameAr : POWER_VARIABLES[name].nameEn)).join(ar ? '، ' : ', ')}.</p>}
               <p>{ar ? 'غير متاح هنا: قياس التبخر والنتح الفعلي، والإشعاع الشمسي، ورطوبة التربة المرصودة مباشرة من الأقمار الصناعية.' : 'Not part of this integration: observed evapotranspiration, radiation and satellite soil moisture.'}</p>
             </div>

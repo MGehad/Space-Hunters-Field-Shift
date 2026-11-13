@@ -11,17 +11,18 @@ const MONTHS = [
   ['MAY', 'May', 'مايو'], ['JUN', 'Jun', 'يونيو'], ['JUL', 'Jul', 'يوليو'], ['AUG', 'Aug', 'أغسطس'],
   ['SEP', 'Sep', 'سبتمبر'], ['OCT', 'Oct', 'أكتوبر'], ['NOV', 'Nov', 'نوفمبر'], ['DEC', 'Dec', 'ديسمبر'],
 ];
+const MONTH_NAMES_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const MONTH_ABBREVIATIONS_AR = ['ينا', 'فبر', 'مار', 'أبر', 'ماي', 'يون', 'يول', 'أغس', 'سبت', 'أكت', 'نوف', 'ديس'];
 
 const LAYERS = [
   { variable: 'T2M', label: 'Temperature reference', labelAr: 'حرارة الهواء', color: '#fbbf24' },
-  { variable: 'PRECTOTCORR', label: 'Rainfall reference', labelAr: 'الهطول', color: '#22d3ee' },
+  { variable: 'PRECTOTCORR', label: 'Rainfall reference', labelAr: 'معدل هطول الأمطار', color: '#22d3ee' },
   { variable: 'RH2M', label: 'Atmospheric humidity', labelAr: 'الرطوبة النسبية', color: '#60a5fa' },
   { variable: 'ALLSKY_SFC_SW_DWN', label: 'Solar radiation', labelAr: 'الإشعاع الشمسي', color: '#fb923c' },
 ];
 
 const CATEGORIES = [
-  { id: 'rainfall', title: 'Rainfall', titleAr: 'الهطول', icon: Droplets, variables: ['PRECTOTCORR'], note: 'NASA POWER corrected precipitation reference', noteAr: 'قيم الهطول المصحَّحة من NASA POWER' },
+  { id: 'rainfall', title: 'Rainfall', titleAr: 'الأمطار', icon: Droplets, variables: ['PRECTOTCORR'], note: 'NASA POWER corrected precipitation reference', noteAr: 'معدل هطول الأمطار المصحَّح من NASA POWER' },
   { id: 'soil', title: 'Soil moisture', titleAr: 'رطوبة التربة', icon: Waves, variables: [], unavailable: 'Not part of this long-term average. See “Recent conditions” below for ERA5 model soil moisture.', unavailableAr: 'ليست ضمن هذا المتوسط طويل الأجل. انظر قسم «الظروف الحديثة» أدناه لرطوبة التربة من نموذج ERA5.' },
   { id: 'heat', title: 'Temperature and radiation', titleAr: 'الحرارة والإشعاع الشمسي', icon: Thermometer, variables: ['T2M', 'ALLSKY_SFC_SW_DWN'], note: 'Air temperature and solar radiation are separate measurements.', noteAr: 'حرارة الهواء والإشعاع الشمسي متغيّران مستقلان.' },
   { id: 'vegetation', title: 'Vegetation', titleAr: 'الغطاء النباتي', icon: Leaf, variables: [], unavailable: 'Not part of this long-term average. See “Recent conditions” below for MODIS vegetation (NDVI).', unavailableAr: 'ليس ضمن هذا المتوسط طويل الأجل. انظر قسم «الظروف الحديثة» أدناه لمؤشر الغطاء النباتي (NDVI) من MODIS.' },
@@ -30,7 +31,7 @@ const CATEGORIES = [
 
 const PRIMARY_MEASURES = [
   { variable: 'T2M', title: 'Air temperature', titleAr: 'حرارة الهواء', note: '2 m reference', noteAr: 'على ارتفاع مترين' },
-  { variable: 'PRECTOTCORR', title: 'Rainfall', titleAr: 'الهطول', note: 'Corrected precipitation', noteAr: 'الهطول المصحَّح' },
+  { variable: 'PRECTOTCORR', title: 'Rainfall', titleAr: 'معدل هطول الأمطار', note: 'Corrected precipitation', noteAr: 'قيمة مصحَّحة' },
   { variable: 'RH2M', title: 'Atmospheric humidity', titleAr: 'الرطوبة النسبية', note: 'Not soil moisture or water availability', noteAr: 'رطوبة الهواء (لا التربة)' },
 ];
 
@@ -83,7 +84,7 @@ function IndicatorMetric({ observation, observations, selectedMonth, color, lang
   const item = valueForMonth(observations, observation, selectedMonth);
   const month = MONTHS[selectedMonth][lang === 'ar' ? 2 : 1];
   const variableLabel = lang === 'ar'
-    ? ({ T2M: 'حرارة الهواء', PRECTOTCORR: 'الهطول', RH2M: 'الرطوبة النسبية', ALLSKY_SFC_SW_DWN: 'الإشعاع الشمسي' })[observation]
+    ? ({ T2M: 'حرارة الهواء', PRECTOTCORR: 'معدل هطول الأمطار', RH2M: 'الرطوبة النسبية', ALLSKY_SFC_SW_DWN: 'الإشعاع الشمسي' })[observation]
     : ({ T2M: '2 m air temperature', PRECTOTCORR: 'Corrected precipitation', RH2M: '2 m relative humidity', ALLSKY_SFC_SW_DWN: 'All-sky surface shortwave radiation' })[observation];
   return <div className="min-w-0 rounded-lg bg-[#081426] p-3">
     <div className="flex items-start justify-between gap-2">
@@ -102,7 +103,7 @@ function IndicatorMetric({ observation, observations, selectedMonth, color, lang
 
 const PROVENANCE_NAMES = {
   T2M: { en: 'Air temperature at 2 m', ar: 'حرارة الهواء على ارتفاع مترين' },
-  PRECTOTCORR: { en: 'Precipitation (corrected)', ar: 'الهطول (مصحَّح)' },
+  PRECTOTCORR: { en: 'Precipitation (corrected)', ar: 'معدل هطول الأمطار (مصحَّح)' },
   RH2M: { en: 'Relative humidity at 2 m', ar: 'الرطوبة النسبية' },
   ALLSKY_SFC_SW_DWN: { en: 'Solar radiation reaching the surface', ar: 'الإشعاع الشمسي الواصل إلى السطح' },
 };
@@ -147,7 +148,7 @@ export default function EnvironmentalAnalysisDashboard({
     };
     return [
       makeRangeInsight('T2M', 'Air temperature', 'حرارة الهواء', '°C'),
-      makeRangeInsight('PRECTOTCORR', 'Corrected precipitation', 'الهطول', 'mm/day'),
+      makeRangeInsight('PRECTOTCORR', 'Corrected precipitation', 'معدل هطول الأمطار', 'mm/day'),
     ].filter(Boolean);
   }, [monthlyObservations, isArabic]);
 
@@ -163,10 +164,33 @@ export default function EnvironmentalAnalysisDashboard({
 
     <div className="rounded-lg bg-[#07152b] p-3">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <label htmlFor="environment-month" className="font-semibold text-white">{isArabic ? 'الشهر المرجعي' : 'Reference month'}: <span className="text-cyan-200">{selectedMonthName}</span></label>
+        <h4 id="environment-month-label" className="font-semibold text-white">{isArabic ? 'الشهر المرجعي' : 'Reference month'}: <span className="text-cyan-200">{isArabic ? selectedMonthName : MONTH_NAMES_EN[selectedMonth]}</span></h4>
         <span className="text-sm text-slate-400">{isArabic ? 'متوسط مناخي شهري، وليس رصدًا مؤرَّخًا' : 'Monthly climatology, not an observation date'}</span>
       </div>
-      <input id="environment-month" type="range" min="0" max="11" step="1" value={selectedMonth} onChange={(event) => onSelectedMonthChange(Number(event.target.value))} className="mt-2 w-full accent-cyan-400" aria-label={isArabic ? 'اختيار الشهر' : 'Select reference month'} />
+      <div role="radiogroup" aria-labelledby="environment-month-label" className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4" onKeyDown={(event) => {
+        const forward = isArabic ? 'ArrowLeft' : 'ArrowRight';
+        const backward = isArabic ? 'ArrowRight' : 'ArrowLeft';
+        const step = event.key === forward || event.key === 'ArrowDown' ? 1 : event.key === backward || event.key === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        event.preventDefault();
+        const next = (selectedMonth + step + 12) % 12;
+        onSelectedMonthChange(next);
+        event.currentTarget.querySelector(`[data-month="${next}"]`)?.focus();
+      }}>
+        {MONTHS.map((month, index) => {
+          const selected = index === selectedMonth;
+          return <button
+            key={month[0]}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            tabIndex={selected ? 0 : -1}
+            data-month={index}
+            onClick={() => onSelectedMonthChange(index)}
+            className={`min-h-10 min-w-0 truncate rounded-lg border px-2 py-2 text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${selected ? 'border-cyan-400 bg-cyan-500/15 text-cyan-100 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.35)]' : 'border-slate-700/70 bg-slate-900/40 text-slate-300 hover:border-slate-500 hover:bg-slate-800/60 hover:text-white'}`}
+          >{isArabic ? month[2] : MONTH_NAMES_EN[index]}</button>;
+        })}
+      </div>
     </div>
 
     <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-3">

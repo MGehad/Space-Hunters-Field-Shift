@@ -32,7 +32,7 @@ export default function DataStatus({ season, simulation, lang }) {
     return (
       <Notice tone="warn">
         <p className="font-medium">{ar ? 'هذه الفترة غير مكتملة في بيانات NASA POWER.' : 'This period is not complete in the NASA POWER record.'}</p>
-        <p className="mt-0.5 text-xs">{ar ? `توجد أشهر تنقصها بيانات الحرارة أو الهطول: ${list}. اختر سنة أخرى أو شهر زراعة آخر.` : `Months without temperature or precipitation: ${list}. Choose another year or planting month.`}</p>
+        <p className="mt-0.5 text-xs">{ar ? `توجد أشهر تنقصها بيانات الحرارة أو الأمطار: ${list}. اختر سنة أخرى أو شهر زراعة آخر.` : `Months without temperature or precipitation: ${list}. Choose another year or planting month.`}</p>
       </Notice>
     );
   }

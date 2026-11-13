@@ -154,14 +154,25 @@ export function buildFarmReport({ session, lang = 'en', now = new Date() }) {
       ? [name(si, s.name), cropName(s.crops[ci]), basisLabel(s.basis), MONTH_NAMES[lang][r.plantingMonth], String(r.seasonDays), int(r.seasonRainMm), int(r.effectiveRainMm), or(range(r.waterNeedMm)), or(range(r.irrigationNeedMm)), r.seasonMeanTempC.toFixed(1), r.optimumTemperatureC ? `${r.optimumTemperatureC[0]}–${r.optimumTemperatureC[1]}` : na, st.tempStatus[r.temperatureStatus]]
       : [name(si, s.name), cropName(s.crops[ci]), basisLabel(s.basis), t.scenarios.notEvaluated, '', '', '', '', '', '', '', ''])));
     const areaHa = scenarioData.farmAreaHa;
-    const totalRows = scenarios.map((s, si) => [name(si, s.name), or(range(s.totals.waterNeedMm)), or(int(s.totals.seasonRainMm)), or(int(s.totals.effectiveRainMm)), or(range(s.totals.irrigationNeedMm)), or(range(s.totals.irrigationNeedM3PerHa)), ...(areaHa ? [or(range(s.totals.irrigationNeedM3PerHa?.map((v) => v * areaHa)))] : []), s.complete ? st.tempCount(s.totals.temperatureWithin, s.totals.temperatureAssessed, s.results.length) : na]);
+    // A totals column is included only when every scenario has a value for it, and the
+    // irrigation chart and ranking only when every scenario has a complete estimate.
+    const totalColumns = [
+      { head: t.scenarios.need, value: (s) => (s.totals.waterNeedMm ? range(s.totals.waterNeedMm) : null) },
+      { head: t.scenarios.rain, value: (s) => (s.totals.seasonRainMm == null ? null : int(s.totals.seasonRainMm)) },
+      { head: t.scenarios.effective, value: (s) => (s.totals.effectiveRainMm == null ? null : int(s.totals.effectiveRainMm)) },
+      { head: t.scenarios.irrigation, value: (s) => (s.totals.irrigationNeedMm ? range(s.totals.irrigationNeedMm) : null) },
+      { head: t.scenarios.irrigationHa, value: (s) => (s.totals.irrigationNeedM3PerHa ? range(s.totals.irrigationNeedM3PerHa) : null) },
+      ...(areaHa ? [{ head: t.scenarios.irrigationFarm, value: (s) => (s.totals.irrigationNeedM3PerHa ? range(s.totals.irrigationNeedM3PerHa.map((v) => v * areaHa)) : null) }] : []),
+      { head: t.scenarios.within, value: (s) => (s.complete && s.totals.temperatureAssessed > 0 ? st.tempCount(s.totals.temperatureWithin, s.totals.temperatureAssessed, s.results.length) : null) },
+    ].filter((column) => scenarios.length > 1 && scenarios.every((s) => column.value(s) != null));
+    const allWater = scenarios.length > 1 && scenarios.every((s) => s.totals.irrigationNeedMm);
     const findings = [];
     const cmp = scenarioData.comparison;
-    if (cmp?.lowestIrrigationId) { const index = scenarios.findIndex((s) => s.id === cmp.lowestIrrigationId); findings.push(st.findingLowest(name(index, ''), int(cmp.spreadMm))); }
+    if (allWater && cmp?.lowestIrrigationId) { const index = scenarios.findIndex((s) => s.id === cmp.lowestIrrigationId); findings.push(st.findingLowest(name(index, ''), int(cmp.spreadMm))); }
     const blocks = [
       { type: 'table', kind: t.kinds.derived, head: [t.scenarios.scenario, t.scenarios.crop, t.scenarios.basis, t.scenarios.planting, t.scenarios.days, t.scenarios.rain, t.scenarios.effective, t.scenarios.need, t.scenarios.irrigation, t.scenarios.temp, t.scenarios.optimum, t.scenarios.status], rows: cropRows, compact: true },
-      { type: 'table', title: t.scenarios.totals, head: [t.scenarios.scenario, t.scenarios.need, t.scenarios.rain, t.scenarios.effective, t.scenarios.irrigation, t.scenarios.irrigationHa, ...(areaHa ? [t.scenarios.irrigationFarm] : []), t.scenarios.within], rows: totalRows },
-      { type: 'figure', figure: 'irrigation', caption: st.chartTitle, bars: scenarios.map((s, si) => ({ label: name(si, s.name), range: s.totals.irrigationNeedMm })) },
+      ...(totalColumns.length ? [{ type: 'table', title: t.scenarios.totals, head: [t.scenarios.scenario, ...totalColumns.map((c) => c.head)], rows: scenarios.map((s, si) => [name(si, s.name), ...totalColumns.map((c) => c.value(s))]) }] : []),
+      ...(allWater ? [{ type: 'figure', figure: 'irrigation', caption: st.chartTitle, bars: scenarios.map((s, si) => ({ label: name(si, s.name), range: s.totals.irrigationNeedMm })) }] : []),
     ];
     if (findings.length) blocks.push({ type: 'list', title: t.scenarios.findings, items: findings });
     sections.push({ id: 'scenarios', title: t.s.scenarios, blocks });

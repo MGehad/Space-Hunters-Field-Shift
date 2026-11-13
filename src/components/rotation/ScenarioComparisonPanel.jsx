@@ -22,41 +22,48 @@ export default function ScenarioComparisonPanel({ lang, scenarios, comparison, s
   const basisLabel = (value) => basisOptions.find((option) => option.value === value)?.label || value;
   const maxIrrigation = Math.max(1, ...scenarios.map((s) => s.totals.irrigationNeedMm?.[1] || 0));
   const total = (scenario, key, formatter = range) => (scenario.totals[key] == null ? null : formatter(scenario.totals[key]));
-  const cell = (value) => (value == null ? <span className="text-slate-400">{t.incomplete}</span> : <span className="ltr-numeric">{value}</span>);
+  const listJoin = (items) => items.join(lang === 'ar' ? '، ' : ', ');
+  const allComplete = scenarios.length > 1 && scenarios.every((s) => s.complete);
+  const allWater = scenarios.length > 1 && scenarios.every((s) => s.totals.irrigationNeedMm);
+  const pending = scenarios.filter((s) => !s.complete).map((s) => s.name);
 
   const findings = [];
-  if (comparison.lowestIrrigationId) {
+  if (allWater && comparison.lowestIrrigationId) {
     const lowest = scenarios.find((s) => s.id === comparison.lowestIrrigationId);
     findings.push(t.findingLowest(lowest.name, round(comparison.spreadMm)));
   }
   scenarios.forEach((scenario) => {
-    const names = (filter) => scenario.results.map((result, index) => ({ result, index })).filter(({ result }) => result.status === 'ok' && filter(result)).map(({ index }) => cropName(scenario.crops[index])).join(lang === 'ar' ? '، ' : ', ');
+    const names = (filter) => listJoin(scenario.results.map((result, index) => ({ result, index })).filter(({ result }) => result.status === 'ok' && filter(result)).map(({ index }) => cropName(scenario.crops[index])));
     const above = names((r) => r.temperatureStatus === 'above'); if (above) findings.push(t.findingTempAbove(scenario.name, above));
     const below = names((r) => r.temperatureStatus === 'below'); if (below) findings.push(t.findingTempBelow(scenario.name, below));
     const dry = names((r) => r.rainCoveragePct && r.rainCoveragePct[1] < 25); if (dry) findings.push(t.findingRainfed(scenario.name, dry));
   });
 
+  // Each metric row is shown only when every scenario has a valid value for it, so no
+  // row compares a value with a gap. `value` returns null when the data are not available.
+  const metricRows = [
+    { key: 'need', kind: 'reference', value: (s) => total(s, 'waterNeedMm') },
+    { key: 'rain', kind: 'model', value: (s) => total(s, 'seasonRainMm', round) },
+    { key: 'effective', kind: 'derived', value: (s) => total(s, 'effectiveRainMm', round) },
+    { key: 'irrigation', kind: 'derived', strong: true, value: (s) => total(s, 'irrigationNeedMm') },
+    { key: 'irrigationHa', kind: 'derived', value: (s) => total(s, 'irrigationNeedM3PerHa') },
+    ...(farmAreaHa ? [{ key: 'irrigationFarm', kind: 'derived', value: (s) => (s.totals.irrigationNeedM3PerHa ? range(s.totals.irrigationNeedM3PerHa.map((v) => v * farmAreaHa)) : null) }] : []),
+    { key: 'temperature', kind: 'derived', value: (s) => (s.complete && s.totals.temperatureAssessed > 0 ? t.tempCount(s.totals.temperatureWithin, s.totals.temperatureAssessed, s.results.length) : null) },
+    { key: 'fit', kind: 'score', value: (s) => (Number.isFinite(fitScores?.[s.id]) ? String(fitScores[s.id]) : null) },
+  ].filter((row) => scenarios.length > 1 && scenarios.every((s) => row.value(s) != null));
   const rows = [
     { key: 'crops', kind: null, render: (s) => s.crops.map((crop) => cropName(crop)).join(lang === 'ar' ? ' ← ' : ' → ') },
     { key: 'basis', kind: 'model', render: (s) => basisLabel(s.basis) },
-    { key: 'need', kind: 'reference', render: (s) => cell(total(s, 'waterNeedMm')) },
-    { key: 'rain', kind: 'model', render: (s) => cell(total(s, 'seasonRainMm', round)) },
-    { key: 'effective', kind: 'derived', render: (s) => cell(total(s, 'effectiveRainMm', round)) },
-    { key: 'irrigation', kind: 'derived', render: (s) => <strong className="font-semibold text-white">{cell(total(s, 'irrigationNeedMm'))}</strong> },
-    { key: 'irrigationHa', kind: 'derived', render: (s) => cell(total(s, 'irrigationNeedM3PerHa')) },
-    ...(farmAreaHa ? [{ key: 'irrigationFarm', kind: 'derived', render: (s) => cell(s.totals.irrigationNeedM3PerHa ? range(s.totals.irrigationNeedM3PerHa.map((v) => v * farmAreaHa)) : null) }] : []),
-    { key: 'temperature', kind: 'derived', render: (s) => (s.complete ? t.tempCount(s.totals.temperatureWithin, s.totals.temperatureAssessed, s.results.length) : <span className="text-slate-400">{t.incomplete}</span>) },
-    { key: 'fit', kind: 'score', render: (s) => cell(fitScores[s.id] ?? null) },
-    { key: 'soil', kind: 'none', render: () => <span className="text-slate-400">{t.soilNote}</span> },
-    { key: 'yield', kind: 'none', render: () => <span className="text-slate-400">{t.yieldNote}</span> },
+    ...metricRows.map((row) => ({ ...row, render: (s) => (row.strong ? <strong className="ltr-numeric font-semibold text-white">{row.value(s)}</strong> : <span className="ltr-numeric">{row.value(s)}</span>) })),
   ];
+  const usedKinds = ['model', 'reference', 'derived', 'score'].filter((kind) => rows.some((row) => row.kind === kind));
 
   return (
     <section id="scenario-comparison" aria-labelledby="scenario-comparison-title" className="surface-card min-w-0 space-y-4 p-3 sm:p-4">
       <div>
         <h2 id="scenario-comparison-title" className="text-card-title font-semibold text-white">{t.title}</h2>
         <p className="mt-1 max-w-4xl text-sm leading-relaxed text-slate-300">{t.intro}</p>
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">{['model', 'reference', 'derived', 'score'].map((kind) => <Kind key={kind} kind={kind} t={t} />)}</div>
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">{metricRows.length > 0 && usedKinds.map((kind) => <Kind key={kind} kind={kind} t={t} />)}</div>
       </div>
 
       {yearly.status === 'loading' && <p role="status" className="rounded-md bg-cyan-950/40 px-3 py-2 text-sm text-cyan-100">{t.loadingYears}</p>}
@@ -96,11 +103,13 @@ export default function ScenarioComparisonPanel({ lang, scenarios, comparison, s
                       <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 text-sm">
                         <dt className="text-slate-400">{t.cropResult.rain}</dt><dd className="ltr-numeric text-end">{round(result.seasonRainMm)} mm</dd>
                         <dt className="text-slate-400">{t.cropResult.effective}</dt><dd className="ltr-numeric text-end">{round(result.effectiveRainMm)} mm</dd>
-                        <dt className="text-slate-400">{t.cropResult.need}</dt><dd className="ltr-numeric text-end">{result.waterNeedMm ? `${range(result.waterNeedMm)} mm` : t.notAvailable}</dd>
-                        <dt className="font-medium text-slate-200">{t.cropResult.irrigation}</dt><dd className="ltr-numeric text-end font-semibold text-white">{result.irrigationNeedMm ? `${range(result.irrigationNeedMm)} mm` : t.notAvailable}</dd>
+                        {result.waterNeedMm && <><dt className="text-slate-400">{t.cropResult.need}</dt><dd className="ltr-numeric text-end">{range(result.waterNeedMm)} mm</dd></>}
+                        {result.irrigationNeedMm && <><dt className="font-medium text-slate-200">{t.cropResult.irrigation}</dt><dd className="ltr-numeric text-end font-semibold text-white">{range(result.irrigationNeedMm)} mm</dd></>}
                         <dt className="text-slate-400">{t.cropResult.temp}</dt><dd className="ltr-numeric text-end">{result.seasonMeanTempC.toFixed(1)} °C</dd>
-                        <dt className="text-slate-400">{t.cropResult.optimum}</dt><dd className="text-end">{result.optimumTemperatureC ? <span className="ltr-numeric">{result.optimumTemperatureC[0]}–{result.optimumTemperatureC[1]} °C</span> : '—'}</dd>
-                        <dd className={`col-span-2 text-xs ${result.temperatureStatus === 'within' ? 'text-emerald-300' : result.temperatureStatus === 'unavailable' ? 'text-slate-400' : 'text-amber-200'}`}>{t.tempStatus[result.temperatureStatus]}</dd>
+                        {result.optimumTemperatureC && result.temperatureStatus !== 'unavailable' && <>
+                          <dt className="text-slate-400">{t.cropResult.optimum}</dt><dd className="ltr-numeric text-end">{result.optimumTemperatureC[0]}–{result.optimumTemperatureC[1]} °C</dd>
+                          <dd className={`col-span-2 text-xs ${result.temperatureStatus === 'within' ? 'text-emerald-300' : 'text-amber-200'}`}>{t.tempStatus[result.temperatureStatus]}</dd>
+                        </>}
                       </dl>
                     )}
                 </div>
@@ -110,24 +119,31 @@ export default function ScenarioComparisonPanel({ lang, scenarios, comparison, s
         ))}
       </div>
 
-      <div className="min-w-0">
-        <h3 className="text-sm font-semibold text-white">{t.tableTitle}</h3>
-        <div className="mt-2 overflow-x-auto">
-          <table className="w-full min-w-[40rem] text-sm">
-            <thead className="text-xs text-slate-400"><tr><th scope="col" className="px-2 py-2 text-start font-medium">{t.indicator}</th>{scenarios.map((s) => <th key={s.id} scope="col" className="px-2 py-2 text-start font-medium">{s.name}</th>)}</tr></thead>
-            <tbody className="divide-y divide-white/5 text-slate-100">
-              {rows.map((row) => (
-                <tr key={row.key}>
-                  <th scope="row" className="px-2 py-2 text-start font-normal text-slate-300"><span className="block">{t.rows[row.key]}</span>{row.kind && <Kind kind={row.kind} t={t} />}</th>
-                  {scenarios.map((s) => <td key={s.id} className="px-2 py-2 align-top">{row.render(s)}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {pending.length > 0 && <p role="status" className="rounded-md bg-amber-950/30 px-3 py-2 text-sm text-amber-100">{t.pendingScenarios(listJoin(pending))}</p>}
 
-      {scenarios.some((s) => s.totals.irrigationNeedMm) && (
+      {metricRows.length === 0
+        ? <p role="status" className="rounded-md border border-white/10 bg-slate-900/50 px-3 py-3 text-sm text-slate-200">{t.noReliableComparison}</p>
+        : (
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-white">{t.tableTitle}</h3>
+            <div className="mt-2 overflow-x-auto">
+              <table className="w-full min-w-[36rem] text-sm">
+                <thead className="text-xs text-slate-400"><tr><th scope="col" className="px-2 py-2 text-start font-medium">{t.indicator}</th>{scenarios.map((s) => <th key={s.id} scope="col" className="px-2 py-2 text-start font-medium">{s.name}</th>)}</tr></thead>
+                <tbody className="divide-y divide-white/5 text-slate-100">
+                  {rows.map((row) => (
+                    <tr key={row.key}>
+                      <th scope="row" className="px-2 py-2 text-start font-normal text-slate-300"><span className="block">{t.rows[row.key]}</span>{row.kind && <Kind kind={row.kind} t={t} />}</th>
+                      {scenarios.map((s) => <td key={s.id} className="px-2 py-2 align-top">{row.render(s)}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2 text-xs text-slate-400">{t.notEstimatedNote}</p>
+          </div>
+        )}
+
+      {allWater && (
         <figure className="min-w-0">
           <figcaption className="text-sm font-semibold text-white">{t.chartTitle}</figcaption>
           <div className="mt-2 space-y-2" dir="ltr">
@@ -136,8 +152,8 @@ export default function ScenarioComparisonPanel({ lang, scenarios, comparison, s
               return (
                 <div key={s.id} className="grid grid-cols-[minmax(0,9rem)_minmax(0,1fr)_auto] items-center gap-2 text-xs sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto]">
                   <span dir="auto" className="truncate text-slate-300">{s.name}</span>
-                  <span className="relative h-3 rounded bg-slate-800">{need && <span className="absolute inset-y-0 rounded bg-emerald-500/80" style={{ left: `${(100 * need[0]) / maxIrrigation}%`, width: `${Math.max(1.5, (100 * (need[1] - need[0])) / maxIrrigation)}%` }} />}</span>
-                  <span className="ltr-numeric w-24 text-end text-slate-200">{need ? range(need) : '—'}</span>
+                  <span className="relative h-3 rounded bg-slate-800"><span className="absolute inset-y-0 rounded bg-emerald-500/80" style={{ left: `${(100 * need[0]) / maxIrrigation}%`, width: `${Math.max(1.5, (100 * (need[1] - need[0])) / maxIrrigation)}%` }} /></span>
+                  <span className="ltr-numeric w-24 text-end text-slate-200">{range(need)}</span>
                 </div>
               );
             })}
@@ -145,10 +161,12 @@ export default function ScenarioComparisonPanel({ lang, scenarios, comparison, s
         </figure>
       )}
 
-      <div>
-        <h3 className="text-sm font-semibold text-white">{t.findingsTitle}</h3>
-        <ul className="mt-1 list-disc space-y-1 ps-5 text-sm text-slate-200">{(findings.length ? findings : [t.findingNone]).map((item) => <li key={item}>{item}</li>)}</ul>
-      </div>
+      {findings.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold text-white">{t.findingsTitle}</h3>
+          <ul className="mt-1 list-disc space-y-1 ps-5 text-sm text-slate-200">{findings.map((item) => <li key={item}>{item}</li>)}</ul>
+        </div>
+      )}
 
       <details className="surface-inset px-3 py-1 text-sm">
         <summary className="min-h-11 cursor-pointer py-3 font-semibold text-cyan-200">{t.methodTitle}</summary>

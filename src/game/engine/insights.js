@@ -32,7 +32,7 @@ export function monthComments(month, previous, crop, isLast) {
   if (month.rainMm < 5) {
     out.push(line('assistant',
       `POWER shows almost no precipitation this month (${n(month.rainMm)} mm). The crop's estimated need was ${n(month.cropNeedMm)} mm, so it had to come from stored soil water or irrigation.`,
-      `تُظهر بيانات POWER أن الهطول شبه معدوم هذا الشهر (${n(month.rainMm)} مم). واحتاج المحصول إلى نحو ${n(month.cropNeedMm)} مم، فلزم تأمينها من مخزون التربة أو الري.`));
+      `تُظهر بيانات POWER أن الأمطار شبه معدومة هذا الشهر (${n(month.rainMm)} مم). واحتاج المحصول إلى نحو ${n(month.cropNeedMm)} مم، فلزم تأمينها من مخزون التربة أو الري.`));
   } else if (rainShare >= 1) {
     out.push(line('assistant',
       `Rain was enough this month: about ${n(month.effectiveRainMm)} mm of the ${n(month.rainMm)} mm recorded is counted as usable, against an estimated need of ${n(month.cropNeedMm)} mm.`,
@@ -59,24 +59,24 @@ export function monthComments(month, previous, crop, isLast) {
       `سحب المحصول من مخزون ماء التربة فانخفض من ${n(month.soilStoreStartMm)} إلى ${n(month.soilStoreEndMm)} مم في الحساب.`));
   }
 
-  // Farmer: what it means in the field.
+  // Local engineer: what it means in the field.
   const sensitive = month.stageId === 'mid';
   if (level === 'severe') {
     out.push(line('farmer',
-      sensitive ? 'This is the worst time to be short of water — the crop is flowering and filling grain. I would expect to see it wilting by midday.' : 'The plants are badly short of water. Leaves roll up and growth stalls in a month like this.',
-      sensitive ? 'هذا أسوأ توقيت للإجهاد المائي: مرحلة التزهير وامتلاء الحبوب. سيذبل المحصول في ساعات الظهيرة.' : 'المحصول يعاني إجهادًا مائيًا شديدًا: تلتف الأوراق ويتوقف النمو في شهر جاف كهذا.'));
+      sensitive ? 'This is the most sensitive stage for water stress: flowering and grain filling. Expect visible wilting in the afternoon and a direct effect on grain set.' : 'Severe water deficit. In a month like this, leaves roll and growth stalls.',
+      sensitive ? 'هذه أكثر المراحل حساسية للإجهاد المائي: التزهير وامتلاء الحبوب. يُتوقَّع ذبول واضح في ساعات الظهيرة وتأثّر مباشر في عقد الحبوب.' : 'عجز مائي شديد: في شهر كهذا تلتف الأوراق ويتوقف النمو.'));
   } else if (level === 'moderate') {
     out.push(line('farmer',
-      sensitive ? 'The crop is thirsty right when it matters. If I had water, this is the month I would use it.' : 'The field is drier than I would like. It can recover if next month is kinder.',
-      sensitive ? 'المحصول يعاني نقص الماء في أهم مرحلة. لو توافر الماء لكان هذا الشهر أولى الأشهر بالري.' : 'التربة جافة نسبيًا، لكن المحصول قد يتعافى إذا كان الشهر التالي أفضل.'));
+      sensitive ? 'The deficit falls in the most critical stage. If water is available, this is the month to prioritise for irrigation.' : 'Soil water is below the preferred level. The crop can recover if more water is available next month.',
+      sensitive ? 'يقع العجز في أهم مراحل النمو. إن توافرت المياه، فهذا الشهر هو الأولى بالري.' : 'رطوبة التربة أقل من المستوى المناسب، ويمكن أن يتعافى المحصول إذا تحسّن توافر المياه في الشهر التالي.'));
   } else if (level === 'mild') {
-    out.push(line('farmer', 'A little short of water, but nothing I would lose sleep over yet.', 'إجهاد مائي خفيف لا يدعو إلى القلق بعد.'));
+    out.push(line('farmer', 'A mild deficit. No action is needed yet, but keep monitoring.', 'عجز مائي خفيف لا يستدعي إجراءً الآن، مع ضرورة المتابعة.'));
   } else if (isLast) {
-    out.push(line('farmer', 'The crop is drying down and nearly ready. Time to look back at the whole season.', 'المحصول يجفّ ويقترب من الحصاد. لنراجع حصيلة الموسم.'));
+    out.push(line('farmer', 'The crop is maturing and close to harvest. Let us review the whole season.', 'المحصول في مرحلة النضج وقريب من الحصاد. لنراجع نتائج الموسم كاملًا.'));
   } else if (month.irrigationNetMm > 0) {
-    out.push(line('farmer', 'The irrigation kept the field in good shape this month.', 'أبقى الري الحقل في حالة جيدة هذا الشهر.'));
+    out.push(line('farmer', 'Irrigation kept the crop adequately supplied this month.', 'حافظ الري على تلبية احتياج المحصول هذا الشهر.'));
   } else {
-    out.push(line('farmer', 'The field had the water it needed this month without any help from me.', 'نالت التربة كفايتها من الماء هذا الشهر دون ري.'));
+    out.push(line('farmer', 'Rain and stored soil water met the crop\'s need this month without irrigation.', 'غطّت الأمطار ومخزون ماء التربة احتياج المحصول هذا الشهر دون ري.'));
   }
   return out;
 }
@@ -156,7 +156,7 @@ export function compareExperiments(a, b) {
   const d = (field) => Math.round((b.totals[field] - a.totals[field]) * 10) / 10;
   const differences = [];
   const rain = d('rainMm');
-  if (Math.abs(rain) >= 10) differences.push({ en: `Experiment B's season had ${n(Math.abs(rain))} mm ${rain > 0 ? 'more' : 'less'} precipitation in the POWER record.`, ar: `كان الهطول في التجربة (ب) ${rain > 0 ? 'أعلى' : 'أقل'} بمقدار ${n(Math.abs(rain))} مم في سجل POWER.` });
+  if (Math.abs(rain) >= 10) differences.push({ en: `Experiment B's season had ${n(Math.abs(rain))} mm ${rain > 0 ? 'more' : 'less'} precipitation in the POWER record.`, ar: `كانت كمية الأمطار في التجربة (ب) ${rain > 0 ? 'أعلى' : 'أقل'} بمقدار ${n(Math.abs(rain))} مم في سجل POWER.` });
   const need = d('cropNeedMm');
   if (Math.abs(need) >= 10) differences.push({ en: `Estimated crop water need was ${n(Math.abs(need))} mm ${need > 0 ? 'higher' : 'lower'} in B.`, ar: `كان الاحتياج المائي للمحصول ${need > 0 ? 'أعلى' : 'أقل'} بمقدار ${n(Math.abs(need))} مم في التجربة (ب).` });
   const irrigation = d('irrigationGrossMm');

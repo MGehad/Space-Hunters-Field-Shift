@@ -19,7 +19,7 @@ export const usaMission = {
   titleEn: "Ogallala Aquifer Drought & Soil Conservation",
   heroImage: "/images/usa_midwest.jpg",
   farmerImage: "/images/farmer_usa.jpg",
-  farmerNameAr: "جاك",
+  farmerNameAr: "المهندس جاك",
   farmerNameEn: "Jack",
   mapCoords: {
     x: 23,

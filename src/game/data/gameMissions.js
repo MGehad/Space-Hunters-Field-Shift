@@ -11,7 +11,7 @@ export const GAME_MISSIONS = Object.freeze([
     startYear: 2019, cropIds: ['wheat', 'maize', 'rice'], defaultCropId: 'wheat',
     titleEn: 'Water scarcity in Egypt', titleAr: 'ندرة المياه في مصر',
     problemEn: 'With almost no rain, how much water does a crop need from irrigation — and how much can a better method save?',
-    problemAr: 'الهطول هنا شبه معدوم؛ فكم يحتاج المحصول من مياه الري؟ وكم توفّر طريقة الري الأعلى كفاءة؟',
+    problemAr: 'الأمطار هنا شبه معدومة؛ فكم يحتاج المحصول من مياه الري؟ وكم توفّر طريقة الري الأعلى كفاءة؟',
     goalEn: 'See that irrigation method changes the water delivered, not the crop\'s need.',
     goalAr: 'تتبيّن أن طريقة الري تغيّر كمية المياه المضافة، لا الاحتياج المائي للمحصول نفسه.',
   },

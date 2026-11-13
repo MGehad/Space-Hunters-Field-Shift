@@ -83,13 +83,13 @@ export default function ReportStage({ country, region, crop, mission, season, si
 
           <div className="grid gap-4 lg:grid-cols-2">
             <section aria-labelledby="env-title" className="surface-card space-y-3 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2"><h2 id="env-title" className="text-card-title font-semibold text-white">{ar ? 'الحرارة والهطول في هذا الموسم' : 'Historical environmental conditions'}</h2><DataTag kind="observed" lang={lang} /></div>
+              <div className="flex flex-wrap items-center justify-between gap-2"><h2 id="env-title" className="text-card-title font-semibold text-white">{ar ? 'الحرارة والأمطار في هذا الموسم' : 'Historical environmental conditions'}</h2><DataTag kind="observed" lang={lang} /></div>
               <div className="grid grid-cols-2 gap-2">
-                <Stat label={ar ? 'مجموع الهطول' : 'Total precipitation'} value={fmt(totals.rainMm)} unit={mm} />
+                <Stat label={ar ? 'كمية الأمطار الإجمالية' : 'Total precipitation'} value={fmt(totals.rainMm)} unit={mm} />
                 <Stat label={ar ? 'متوسط حرارة الموسم' : 'Mean season temperature'} value={fmt(totals.meanTempC)} unit="°C" />
               </div>
-              <MonthChart lang={lang} labels={labels} unit={mm} lineUnit="°C" title={ar ? 'الهطول والحرارة شهريًا' : 'Monthly precipitation and temperature'}
-                bars={[{ name: ar ? 'الهطول' : 'Precipitation', color: CHART_COLORS.rain, values: months.map((m) => m.rainMm) }]}
+              <MonthChart lang={lang} labels={labels} unit={mm} lineUnit="°C" title={ar ? 'الأمطار والحرارة شهريًا' : 'Monthly precipitation and temperature'}
+                bars={[{ name: ar ? 'كمية الأمطار' : 'Precipitation', color: CHART_COLORS.rain, values: months.map((m) => m.rainMm) }]}
                 line={{ name: ar ? 'متوسط الحرارة' : 'Mean temperature', color: CHART_COLORS.temp, values: months.map((m) => m.tMean) }} />
             </section>
 
@@ -118,7 +118,7 @@ export default function ReportStage({ country, region, crop, mission, season, si
                 <thead className="bg-white/[0.04] text-xs text-slate-300"><tr>
                   <th className="px-3 py-2 text-start font-medium">{ar ? 'الشهر' : 'Month'}</th>
                   <th className="px-3 py-2 text-start font-medium">{ar ? 'المرحلة' : 'Stage'}</th>
-                  <th className="px-3 py-2 text-end font-medium">{ar ? 'الهطول' : 'Rain'} ({mm})</th>
+                  <th className="px-3 py-2 text-end font-medium">{ar ? 'الأمطار' : 'Rain'} ({mm})</th>
                   <th className="px-3 py-2 text-end font-medium">{ar ? 'الاحتياج' : 'Need'} ({mm})</th>
                   <th className="px-3 py-2 text-end font-medium">{ar ? 'ري مضاف' : 'Irrigation'} ({mm})</th>
                   <th className="px-3 py-2 text-start font-medium">{ar ? 'الإجهاد المائي' : 'Water stress'}</th>
@@ -153,9 +153,9 @@ export default function ReportStage({ country, region, crop, mission, season, si
             <h2 id="lessons-title" className="text-card-title font-semibold text-white">{ar ? 'ما الذي نستخلصه؟' : 'Lessons learned'}</h2>
             <CharacterMessage speaker="assistant" countryId={country.id} lang={lang}><ul className="list-disc space-y-1 ps-4">{lessons.map((item, i) => <li key={i}>{ar ? item.ar : item.en}</li>)}</ul></CharacterMessage>
             <CharacterMessage speaker="farmer" countryId={country.id} lang={lang}>
-              {totals.relativeYield >= 0.85 ? (ar ? 'موسم جيد: توافر الماء في الأوقات التي احتاج إليه المحصول فيها.' : 'A good season. The water was there when the crop needed it.')
-                : totals.relativeYield >= 0.5 ? (ar ? 'موسم متوسط: حدثت خسارة في الأشهر الجافة، وتبيّن أي الأشهر كان الأهم.' : 'A middling season. We lost some in the thirsty months, and now I know which ones mattered most.')
-                : (ar ? 'موسم صعب: دون ماء كافٍ في منتصف الموسم لا يستطيع المحصول تعويض ما فاته.' : 'A hard season. Without enough water in mid-season the crop cannot make it up.')}
+              {totals.relativeYield >= 0.85 ? (ar ? 'موسم جيد: توافر الماء في الأوقات التي احتاج إليه المحصول فيها.' : 'A good season. Water was available when the crop needed it most.')
+                : totals.relativeYield >= 0.5 ? (ar ? 'موسم متوسط: حدثت خسارة في الأشهر الجافة، وتبيّن أي الأشهر كان الأهم.' : 'An average season. Losses came from the dry months, and the results show which months mattered most.')
+                : (ar ? 'موسم صعب: دون ماء كافٍ في منتصف الموسم لا يستطيع المحصول تعويض ما فاته.' : 'A difficult season. Without enough water in mid-season, the crop cannot recover the loss.')}
             </CharacterMessage>
           </section>
 
@@ -173,7 +173,7 @@ export default function ReportStage({ country, region, crop, mission, season, si
           <details className="surface-card p-3">
             <summary className="min-h-11 py-2 text-sm font-semibold text-cyan-200">{ar ? 'كيف حُسبت هذه النتيجة؟ (المصادر والمنهجية)' : 'How were these results calculated? (assumptions and sources)'}</summary>
             <div className="mt-1 space-y-2 text-sm text-slate-200">
-              <p><strong className="font-semibold text-white">{ar ? 'بيانات NASA POWER:' : 'NASA POWER data:'}</strong> {ar ? 'متوسط الحرارة والهطول لكل شهر من NASA POWER (نموذج MERRA-2 لخلية بدقة نصف درجة تقريبًا).' : 'monthly mean temperature and precipitation from NASA POWER (MERRA-2 reanalysis, grid cell of about half a degree).'} <a className="text-cyan-300 underline" href={POWER_MONTHLY_DOCS_URL} target="_blank" rel="noreferrer">{ar ? 'التوثيق' : 'Documentation'}</a></p>
+              <p><strong className="font-semibold text-white">{ar ? 'بيانات NASA POWER:' : 'NASA POWER data:'}</strong> {ar ? 'متوسط الحرارة ومعدل هطول الأمطار لكل شهر من NASA POWER (نموذج MERRA-2 لخلية بدقة نصف درجة تقريبًا).' : 'monthly mean temperature and precipitation from NASA POWER (MERRA-2 reanalysis, grid cell of about half a degree).'} <a className="text-cyan-300 underline" href={POWER_MONTHLY_DOCS_URL} target="_blank" rel="noreferrer">{ar ? 'التوثيق' : 'Documentation'}</a></p>
               <ol className="list-decimal space-y-1 ps-5">
                 <li>{ar ? 'التبخر والنتح المرجعي بطريقة بلاني–كريدل (الفاو): ETo = p × (0.46 × T + 8)، حيث p نسبة ساعات النهار.' : 'Reference evapotranspiration by the Blaney-Criddle method (FAO): ETo = p × (0.46 × T + 8), where p is the share of daytime hours for the latitude and month.'}</li>
                 <li>{ar ? 'الاحتياج المائي للمحصول = معامل المحصول Kc × التبخر والنتح المرجعي × عدد أيام الشهر (من جداول الفاو).' : 'Crop water need = crop factor Kc × ETo × days, with Kc values and stage lengths from FAO tables.'}</li>

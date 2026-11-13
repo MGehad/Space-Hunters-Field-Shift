@@ -4,12 +4,12 @@ import React from 'react';
 import { missionsData } from '../../data/missionsData';
 import { ASSISTANT } from '../../game/data/gameCountries.js';
 
-/** Farmer identity comes from the existing mission data so characters stay consistent with the map. */
+/** The local engineer's name and photo come from the existing mission data so characters stay consistent with the map. */
 export function getCharacter(speaker, countryId, lang) {
   const ar = lang === 'ar';
   if (speaker === 'assistant') return { name: ar ? ASSISTANT.nameAr : ASSISTANT.nameEn, role: ar ? ASSISTANT.roleAr : ASSISTANT.roleEn, avatar: ASSISTANT.avatar, tone: 'assistant' };
   const mission = missionsData.find((item) => item.id === countryId) || missionsData[0];
-  return { name: ar ? mission.farmerNameAr : mission.farmerNameEn, role: ar ? 'مزارع محلي' : 'Local farmer', avatar: mission.farmerImage, tone: 'farmer' };
+  return { name: ar ? mission.farmerNameAr : mission.farmerNameEn, role: ar ? 'مهندس زراعي محلي' : 'Local agricultural engineer', avatar: mission.farmerImage, tone: 'farmer' };
 }
 
 export function CharacterMessage({ speaker, countryId, lang, children, compact = false }) {

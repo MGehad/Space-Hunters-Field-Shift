@@ -19,7 +19,7 @@ export const indiaMission = {
   titleEn: "Extreme Heat & Evaporative Stress in Punjab",
   heroImage: "/images/india_farm.jpg",
   farmerImage: "/images/farmer_india.jpg",
-  farmerNameAr: "راميش",
+  farmerNameAr: "المهندس راميش",
   farmerNameEn: "Ramesh",
   mapCoords: {
     x: 69,
