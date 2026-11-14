@@ -69,7 +69,7 @@ const CRISIS_COLOR = {
   extreme: '#c084fc',
 };
 
-const MISSION_CONTINENT = { egypt: 'africa', brazil: 'southAmerica', india: 'asia', usa: 'northAmerica', australia: 'oceania' };
+const MISSION_CONTINENT = { egypt: 'africa', brazil: 'southAmerica', india: 'asia', usa: 'northAmerica', australia: 'oceania', spain: 'europe' };
 
 /* Countries are drawn once per continent group. The glow filter is applied to
    six groups instead of ~180 individual paths, and the layer is memoised so

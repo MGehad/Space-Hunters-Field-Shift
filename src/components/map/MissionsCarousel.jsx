@@ -5,6 +5,11 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Target, ChevronRight, ChevronLeft } from 'lucide-react';
 import { mapControlsData } from '../../data/worldMapData';
 
+// Two-letter country code from a flag emoji (two regional-indicator symbols), e.g. 🇪🇸 → ES.
+function countryCodeFromFlag(flag = '') {
+  return [...flag].map((ch) => ch.codePointAt(0) - 0x1F1E6).filter((n) => n >= 0 && n < 26).map((n) => String.fromCharCode(65 + n)).join('');
+}
+
 export default function MissionsCarousel({
   missions,
   selectedMission,
@@ -59,10 +64,10 @@ export default function MissionsCarousel({
         </div>
 
         {/* Mission Cards Grid */}
-        <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 ${isMobile ? 'gap-2.5' : 'gap-1.5'}`}>
+        <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 ${isMobile ? 'gap-2.5' : 'gap-1.5'}`}>
           {missions.map(m => {
             const isSel = selectedMission.id === m.id;
-            const countryCode = m.id === 'egypt' ? 'EG' : m.id === 'brazil' ? 'BR' : m.id === 'india' ? 'IN' : m.id === 'usa' ? 'US' : 'AU';
+            const countryCode = countryCodeFromFlag(m.flag);
             return (
               <button
                 key={m.id}
@@ -100,12 +105,12 @@ export default function MissionsCarousel({
                 {/* Text Content */}
                 <div className={isMobile ? 'mt-1.5' : 'mt-1'}>
                   <div className="flex items-center justify-between gap-1">
-                    <p className={`${isMobile ? 'text-sm' : 'text-xs'} font-bold text-white truncate leading-tight`}>
+                    <p title={lang === 'ar' ? m.countryAr : m.countryEn} className={`${isMobile ? 'text-sm' : 'text-xs'} font-bold text-white truncate leading-tight`}>
                       {lang === 'ar' ? m.countryAr : m.countryEn}
                     </p>
                     <span className="text-[9.5px] font-mono text-cyan-400/90 font-bold shrink-0">#{m.code}</span>
                   </div>
-                  <p className={`${isMobile ? 'text-xs mt-1' : 'text-[10px] mt-0.5'} text-cyan-300/90 truncate leading-tight font-medium`}>
+                  <p title={lang === 'ar' ? m.titleAr : m.titleEn} className={`${isMobile ? 'text-xs mt-1' : 'text-[10px] mt-0.5'} text-cyan-300/90 truncate leading-tight font-medium`}>
                     {lang === 'ar' ? m.titleAr : m.titleEn}
                   </p>
                 </div>

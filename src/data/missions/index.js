@@ -3,6 +3,7 @@ import { brazilMission } from './brazil';
 import { indiaMission } from './india';
 import { usaMission } from './usa';
 import { australiaMission } from './australia';
+import { spainMission } from './spain';
 
 /**
  * Array of all missions in the game
@@ -12,7 +13,8 @@ export const missionsData = [
   brazilMission,
   indiaMission,
   usaMission,
-  australiaMission
+  australiaMission,
+  spainMission
 ];
 
 /**
@@ -35,5 +37,6 @@ export {
   brazilMission,
   indiaMission,
   usaMission,
-  australiaMission
+  australiaMission,
+  spainMission
 };

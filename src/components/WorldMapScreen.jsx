@@ -17,6 +17,7 @@ const MISSION_GEO = {
   india: [79.5, 22.5],
   usa: [-98.5, 38.5],
   australia: [134.0, -26.5],
+  spain: [-4.5, 39.8],
 };
 
 /* SVG VIEWBOX DIMENSIONS */

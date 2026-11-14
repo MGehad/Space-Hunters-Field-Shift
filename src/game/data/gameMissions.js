@@ -51,6 +51,15 @@ export const GAME_MISSIONS = Object.freeze([
     goalEn: 'Run two crops in the same place and year and compare their water need and stress.',
     goalAr: 'تزرع محصولين في الموقع نفسه والعام نفسه، وتقارن احتياجهما المائي ومقدار الإجهاد.',
   },
+  {
+    id: 'spain-drought', countryId: 'spain', regionId: 'andalusia', difficulty: 'medium',
+    startYear: 2022, cropIds: ['wheat', 'sunflower', 'rice'], defaultCropId: 'wheat',
+    titleEn: 'A dry year in Andalusia', titleAr: 'عام جاف في الأندلس',
+    problemEn: 'The 2022–2023 season is widely reported as a severe drought in southern Spain, with low reservoirs and cuts to irrigation water. What does the monthly record show, and how much would each crop need from irrigation?',
+    problemAr: 'كان موسم 2022–2023 موسم جفاف شديد في جنوب إسبانيا، انخفضت فيه مياه الخزانات وخُفِّضت حصص الري. ماذا تُظهر البيانات الشهرية؟ وكم يحتاج كل محصول من مياه الري؟',
+    goalEn: 'Compare a winter crop that uses the rainy season with a summer crop that relies on irrigation.',
+    goalAr: 'تقارن محصولًا شتويًّا يستفيد من موسم المطر بمحصول صيفي يعتمد على الري.',
+  },
 ]);
 
 export const getGameMission = (id) => GAME_MISSIONS.find((m) => m.id === id) || null;

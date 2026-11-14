@@ -32,7 +32,7 @@ The website has two separate parts, both opened from the home page:
 | Part | For whom | What it does |
 |---|---|---|
 | **Farm Analysis & Planning** | Agricultural professionals | Analyses one farm location, compares three crop rotations and exports a report |
-| **Educational Missions** | Learners | Simulates a crop season in five countries with real NASA POWER data |
+| **Educational Missions** | Learners | Simulates a crop season in six countries with real NASA POWER data |
 
 Field Shift is honest about what it shows. Values are labelled as observations, model estimates or calculated indicators, and missing data are shown as "unavailable" instead of being invented. **Field Shift does not forecast yield or profit.**
 
@@ -101,7 +101,7 @@ Pe = 0.6 × P − 10    when monthly rainfall P ≤ 75 mm   (never below 0)
 
 ### Educational Missions
 
-The player chooses one of five countries (Egypt, India, the United States, Brazil or Australia), one of seven crops, a planting year and month, and irrigation decisions. The simulation loads real NASA POWER monthly data for that season and calculates a monthly water balance with FAO methods:
+The player chooses one of six countries (Egypt, India, the United States, Brazil, Australia or Spain), one of seven crops, a planting year and month, and irrigation decisions. The simulation loads real NASA POWER monthly data for that season and calculates a monthly water balance with FAO methods:
 
 - Blaney–Criddle reference evapotranspiration
 - FAO-56 crop coefficients

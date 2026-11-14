@@ -132,6 +132,29 @@ export const GAME_COUNTRIES = Object.freeze({
       { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'A dry spring. The crop is at its thirstiest just when the rain often tails off.', aAr: 'أن يكون الربيع جافًّا؛ فهو وقت ذروة احتياج المحصول للماء مع تراجع الأمطار.' },
     ],
   },
+  spain: {
+    id: 'spain',
+    introEn: 'Southern Spain has a Mediterranean climate: most of the rain falls from autumn to spring, and summers are hot and dry.',
+    introAr: 'مناخ جنوب إسبانيا متوسطي: يهطل معظم المطر بين الخريف والربيع، والصيف حار جاف.',
+    challengeEn: 'Drought and irrigation limits', challengeAr: 'الجفاف وقيود مياه الري',
+    regions: [
+      region({ id: 'andalusia', nameEn: 'Andalusia (Guadalquivir valley, Seville)', nameAr: 'الأندلس (وادي الوادي الكبير، إشبيلية)', latitude: 37.4, longitude: -5.9,
+        suggestions: [{ cropId: 'wheat', plantingMonth: 11 }, { cropId: 'sunflower', plantingMonth: 3 }, { cropId: 'rice', plantingMonth: 5 }] }),
+      region({ id: 'castile', nameEn: 'Castile and León (Valladolid area)', nameAr: 'قشتالة وليون (منطقة بلد الوليد)', latitude: 41.65, longitude: -4.72,
+        suggestions: [{ cropId: 'sunflower', plantingMonth: 4 }, { cropId: 'maize', plantingMonth: 5 }] }),
+    ],
+    script: [
+      { speaker: 'farmer', textEn: 'Hola. I am an agricultural engineer working with farms in the Guadalquivir valley in Andalusia. Wheat is sown in autumn on the winter rains, sunflower goes in at the end of winter, and rice is grown in the marshes near Seville with irrigation water.', textAr: 'مرحبًا. أنا مهندس زراعي أعمل مع مزارع وادي الوادي الكبير في الأندلس. يُزرع القمح في الخريف معتمدًا على أمطار الشتاء، ودوّار الشمس في أواخر الشتاء، أما الأرز فيُزرع في المستنقعات القريبة من إشبيلية بمياه الري.' },
+      { speaker: 'farmer', textEn: 'Almost no rain falls here in summer. Summer crops depend on water stored in the reservoirs, and in drought years the irrigation allocation is cut.', textAr: 'لا يكاد المطر يهطل هنا صيفًا، فتعتمد المحاصيل الصيفية على المياه المخزَّنة في الخزانات، وفي سنوات الجفاف تُخفَّض حصص الري.' },
+      { speaker: 'assistant', textEn: 'This is almost the opposite of a monsoon climate: the wet months are autumn to spring. Compare a crop that grows through the rainy months with one that grows through the dry summer.', textAr: 'هذا المناخ يكاد يكون عكس مناخ الأمطار الموسمية: الأشهر الممطرة هنا من الخريف إلى الربيع. قارن محصولًا ينمو في أشهر المطر بمحصول ينمو في الصيف الجاف.' },
+      { speaker: 'assistant', textEn: 'Keep in mind that this model has no data on reservoirs or water allocations. It shows how much water the crop needs and how much the rain supplies; the gap is what irrigation would have to provide.', textAr: 'تذكّر أن هذا الحساب لا يتضمن بيانات عن الخزانات أو حصص المياه؛ فهو يبيّن احتياج المحصول من الماء وما توفره الأمطار منه، والفرق بينهما هو ما يجب أن يوفره الري.' },
+      { speaker: 'farmer', textEn: 'The question for this case: in a dry year, which crops can still make use of the little rain, and which depend entirely on irrigation?', textAr: 'السؤال في هذه الحالة: في عام جاف، ما المحاصيل التي تستفيد من القليل من المطر، وما المحاصيل التي تعتمد كليًّا على الري؟' },
+    ],
+    farmerQuestions: [
+      { id: 'grow', qEn: 'Which crops are typical here, and when are they planted?', qAr: 'ما المحاصيل الشائعة هنا، ومتى تُزرع؟', aEn: 'Wheat is sown around November and sunflower around March. Rice goes into the marshes around May. Maize and other summer crops are grown only where there is irrigation.', aAr: 'يُزرع القمح في نوفمبر تقريبًا، ودوّار الشمس في مارس، والأرز في المستنقعات في مايو. أما الذرة وغيرها من المحاصيل الصيفية فلا تُزرع إلا حيث يتوفر الري.' },
+      { id: 'worry', qEn: 'What is the main risk you see here?', qAr: 'ما أبرز المخاطر التي تراها هنا؟', aEn: 'A dry winter and spring. When those rains fail, rainfed crops suffer and the reservoirs that supply summer irrigation do not refill.', aAr: 'أن يكون الشتاء والربيع جافَّين؛ فإذا شحّت أمطارهما تضررت المحاصيل المطرية، ولم تمتلئ الخزانات التي تمدّ ري الصيف بالمياه.' },
+    ],
+  },
 });
 
 /** Questions the assistant answers the same way in every country. */
