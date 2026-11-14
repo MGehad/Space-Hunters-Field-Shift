@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, Check, Lock, MapPinned, Satellite, Sprout, Scale, ShieldAlert, ClipboardCheck, List } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useWorkingSession } from '../context/WorkingSessionContext';
@@ -34,6 +35,9 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
   const [maxReached, setMaxReached] = useState(() => Math.max(0, Math.min(LAST_STEP, session.workflowProgress?.maxReached ?? 0)));
   const [step, setStep] = useState(() => Math.max(0, Math.min(initialStep, session.workflowProgress?.maxReached ?? 0)));
   const [stepsOpen, setStepsOpen] = useState(false);
+  // On wide screens the step bar sits in the main header (AppNavigation renders the slot).
+  const [headerSlot, setHeaderSlot] = useState(null);
+  useEffect(() => { setHeaderSlot(document.getElementById('app-header-slot')); }, []);
   const contentRef = useRef(null);
   const farmValidateRef = useRef(null);
   const evaluation = session.analysisResults?.rotationEvaluation || null;
@@ -93,6 +97,28 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
     : (ar ? 'اضغط «اعتماد الاستراتيجية المختارة» لفتح ملخص القرار.' : 'Choose “Confirm selected strategy” to open the decision summary.');
   const stepLockedHint = ar ? 'تُفتح هذه الخطوة بعد إكمال الخطوة السابقة والضغط على «التالي».' : 'This step opens after you finish the previous one and press Next.';
 
+  const renderSteps = (align, wide) => <ol className={`flex items-center gap-1 ${align}`}>{FLOW.map(({ id, title, titleAr, short, shortAr }) => {
+    const locked = isLocked(id);
+    const active = id === step;
+    const done = !locked && !active && id < maxReached;
+    return <li key={id} className={`flex items-center gap-1 ${active ? 'shrink-0' : 'min-w-0'}`}>
+      <button type="button" disabled={locked} aria-current={active ? 'step' : undefined} title={locked ? (id === LAST_STEP && id <= maxReached ? lockedHint : stepLockedHint) : (ar ? titleAr : title)} onClick={() => navigateStep(id)} className="step-pill">
+        <span className="step-pill-number" data-done={done ? 'true' : undefined}>{done ? <Check aria-hidden="true" className="h-3 w-3" /> : num(id + 1)}</span>
+        <span className={active ? '' : (wide ? 'hidden truncate 2xl:inline' : 'hidden truncate lg:inline')}>{ar ? shortAr : short}</span>
+        {!active && <span className={wide ? 'sr-only 2xl:hidden' : 'sr-only lg:hidden'}>{ar ? titleAr : title}</span>}
+        {locked && <span className="sr-only">{ar ? '(مقفلة)' : '(locked)'}</span>}
+      </button>
+      {id < LAST_STEP && <span aria-hidden="true" className={`hidden h-px w-2.5 shrink-0 xl:block ${done ? 'bg-emerald-600' : 'bg-[#1f3b6a]'}`} />}
+    </li>;
+  })}</ol>;
+  const headerSteps = <div data-header-steps="" className="hidden min-w-0 flex-1 items-center gap-4 xl:flex">
+    <div className="min-w-0 shrink-0 max-w-[15rem] 2xl:max-w-[20rem]">
+      <h1 className="truncate text-base font-semibold leading-tight text-white">{ar ? current.titleAr : current.title}</h1>
+      <p className="truncate text-xs font-semibold uppercase tracking-[0.1em] text-cyan-300">{ar ? `تحليل المزرعة · الخطوة ${num(step + 1)} من ${num(FLOW.length)}` : `Farm analysis · Step ${step + 1} of ${FLOW.length}`}</p>
+    </div>
+    <nav aria-label={ar ? 'خطوات التحليل' : 'Analysis steps'} className="min-w-0 flex-1">{renderSteps('justify-center', true)}</nav>
+  </div>;
+
   useEffect(() => {
     if (!stepsOpen) return undefined;
     const closeOnEscape = (event) => { if (event.key === 'Escape') setStepsOpen(false); };
@@ -101,10 +127,11 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
   }, [stepsOpen]);
 
   return <div dir={isRtl ? 'rtl' : 'ltr'} className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#040915] text-slate-100">
-    <header className="relative z-40 shrink-0 border-b border-white/10 bg-[#061327] px-3 py-1.5 sm:px-5">
+    {headerSlot && createPortal(headerSteps, headerSlot)}
+    <header className={`relative z-40 shrink-0 border-b border-[#162b4f] bg-[#060d1d] px-3 py-1.5 sm:px-5 ${headerSlot ? 'xl:hidden' : ''}`}>
       <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-2 sm:gap-4">
         <div className="flex min-w-0 shrink-0 items-center gap-2 max-w-[75%] md:max-w-[260px] lg:max-w-[280px]">
-          <span className="shrink-0 rounded-md border border-cyan-500/30 bg-cyan-950/80 px-1.5 py-0.5 text-xs font-bold text-cyan-300">
+          <span className="shrink-0 rounded-full border border-[#1f3b6a] bg-[#0a1528] px-2 py-0.5 text-xs font-bold text-cyan-300">
             {ar ? `${num(step + 1)}/${num(FLOW.length)}` : `${step + 1}/${FLOW.length}`}
           </span>
           <h1 className="truncate text-sm font-semibold leading-tight text-white sm:text-base">{ar ? current.titleAr : current.title}</h1>
@@ -121,25 +148,9 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
           </>}
         </div>
 
-        {/* Inline compact stepper from tablet width up so header stays a single slim bar. */}
-        <nav aria-label={ar ? 'خطوات التحليل' : 'Analysis steps'} className="hidden min-w-0 flex-1 md:block">
-          <ol className="flex items-center justify-end gap-1">{FLOW.map(({ id, title, titleAr, short, shortAr }) => {
-            const locked = isLocked(id);
-            const active = id === step;
-            const done = !locked && !active && id < maxReached;
-            return <li key={id} className="flex min-w-0 items-center gap-1">
-              <button type="button" disabled={locked} aria-current={active ? 'step' : undefined} title={locked ? (id === LAST_STEP && id <= maxReached ? lockedHint : stepLockedHint) : (ar ? titleAr : title)} onClick={() => navigateStep(id)} className={`flex h-8 min-w-0 items-center justify-center gap-1.5 rounded-lg px-1.5 text-xs transition-colors lg:px-2 ${active ? 'bg-cyan-900/70 font-semibold text-white ring-1 ring-cyan-400/40' : locked ? 'cursor-not-allowed text-slate-500' : 'text-slate-200 hover:bg-white/10'}`}>
-                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${active ? 'bg-cyan-500 text-slate-950' : done ? 'bg-emerald-600/80 text-white' : locked ? 'border border-dashed border-slate-600 text-slate-500' : 'border border-slate-400 text-slate-200'}`}>{done ? <Check aria-hidden="true" className="h-3 w-3" /> : locked ? <Lock aria-hidden="true" className="h-2.5 w-2.5" /> : num(id + 1)}</span>
-                <span className="hidden truncate lg:inline">{ar ? shortAr : short}</span>
-                <span className="sr-only lg:hidden">{ar ? titleAr : title}</span>
-                {locked && <span className="sr-only">{ar ? '(مقفلة)' : '(locked)'}</span>}
-              </button>
-              {id < LAST_STEP && <span aria-hidden="true" className={`hidden h-px w-2 shrink-0 xl:block ${done ? 'bg-emerald-600' : 'bg-slate-700'}`} />}
-            </li>;
-          })}</ol>
-        </nav>
+        {/* Inline step bar from tablet width up; from 1280 px it moves into the main header. */}
+        <nav aria-label={ar ? 'خطوات التحليل' : 'Analysis steps'} className="hidden min-w-0 flex-1 md:block xl:hidden">{renderSteps('justify-end', false)}</nav>
       </div>
-
       {/* Compact progress bar on phones */}
       <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-slate-800 md:hidden" role="progressbar" aria-label={ar ? 'التقدّم في الخطوات' : 'Workflow progress'} aria-valuemin={1} aria-valuemax={FLOW.length} aria-valuenow={step + 1}><div className="h-full rounded-full bg-cyan-500 transition-[width] duration-200" style={{ width: `${((step + 1) / FLOW.length) * 100}%` }} /></div>
     </header>
@@ -151,13 +162,17 @@ export default function MissionTerminal({ onOpenGame, onWorkflowStepChange, init
       {step === LAST_STEP && !decisionCurrent && <div className="mx-auto max-w-4xl p-6 text-center"><h2 className="text-section-title font-semibold">{ar ? 'ملخص القرار والتقرير' : 'Decision Summary'}</h2><p className="mt-2 text-sm text-slate-300">{ar ? 'اختر استراتيجية واعتمدها أولًا لعرض الملخص.' : 'Select a rotation strategy to view results.'}</p></div>}
     </main>
 
-    <footer className="z-20 shrink-0 border-t border-white/10 bg-[#061327] px-3 py-2.5 pb-[max(.625rem,env(safe-area-inset-bottom))] sm:px-5">
+    <footer className="z-20 shrink-0 border-t border-[#162b4f] bg-[#060d1d] px-3 py-2.5 pb-[max(.625rem,env(safe-area-inset-bottom))] sm:px-5">
       {nextBlocked && <p className="mx-auto mb-2 w-full max-w-[1500px] text-center text-xs text-amber-200 sm:hidden">{lockedHint}</p>}
       <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-3">
-        <button type="button" disabled={step === 0} onClick={() => navigateStep((value) => value - 1)} className="app-nav-button flex items-center gap-2 rounded-lg border border-white/15 px-3 text-sm text-slate-100 hover:bg-white/10 disabled:opacity-40"><PreviousIcon aria-hidden="true" className="h-4 w-4" />{ar ? 'السابق' : 'Previous'}</button>
-        <span className="hidden min-w-0 text-center text-xs text-slate-300 sm:inline">{nextBlocked ? <span className="text-amber-200">{lockedHint}</span> : step < LAST_STEP ? (ar ? `التالي: ${FLOW[step + 1].titleAr}` : `Next: ${FLOW[step + 1].title}`) : (ar ? 'اكتملت الخطوات' : 'Workflow complete')}</span>
+        <button type="button" disabled={step === 0} onClick={() => navigateStep((value) => value - 1)} className="btn-secondary text-sm"><PreviousIcon aria-hidden="true" className="h-4 w-4" />{ar ? 'السابق' : 'Previous'}</button>
+        <div className="hidden min-w-0 flex-col items-center gap-1.5 text-center sm:flex">
+          <span className="min-w-0 text-sm text-slate-300">{nextBlocked ? <span className="text-amber-200">{lockedHint}</span> : step < LAST_STEP ? <>{ar ? 'التالي: ' : 'Next: '}<span className="font-semibold text-white">{ar ? FLOW[step + 1].titleAr : FLOW[step + 1].title}</span></> : (ar ? 'اكتملت الخطوات' : 'Workflow complete')}</span>
+          <div aria-hidden="true" className="flex gap-1">{FLOW.map(({ id }) => <span key={id} className={`h-1 w-7 rounded-full ${id <= step ? 'bg-cyan-400' : 'bg-[#162b4f]'}`} />)}</div>
+          <span className="hidden text-2xs text-slate-400 lg:block">Team Space Hunters · Field Shift: Adapting Farms with NASA Data</span>
+        </div>
         {step < LAST_STEP
-          ? <button type="button" disabled={nextBlocked} onClick={advance} className="app-nav-button flex items-center gap-2 rounded-lg bg-cyan-700 px-4 text-sm font-semibold text-white hover:bg-cyan-600 disabled:opacity-40">{ar ? 'التالي' : 'Next'}<NextIcon aria-hidden="true" className="h-4 w-4" /></button>
+          ? <button type="button" disabled={nextBlocked} onClick={advance} className="btn-primary text-sm">{ar ? 'التالي' : 'Next'}<NextIcon aria-hidden="true" className="h-4 w-4" /></button>
           : <span className="w-px" />}
       </div>
     </footer>

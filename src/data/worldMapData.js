@@ -15,7 +15,7 @@ export const mapControlsData = {
   recenterTooltipAr: "توسيط الخريطة على البلد المحدد",
   recenterTooltipEn: "Recenter Map on Selected Mission",
   recenterBtnAr: "تركيز الخريطة",
-  recenterBtnEn: "RECENTER MAP",
+  recenterBtnEn: "Recenter map",
   prevMissionTooltipAr: "المهمة السابقة",
   prevMissionTooltipEn: "Previous Mission",
   nextMissionTooltipAr: "المهمة التالية",

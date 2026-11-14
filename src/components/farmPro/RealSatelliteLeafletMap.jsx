@@ -277,7 +277,7 @@ export default function RealSatelliteLeafletMap({
     <div className="relative h-full min-h-0 w-full">
       <div ref={mapContainerRef} className="z-0 h-full w-full cursor-crosshair" />
 
-      {tileLoadError && <div role="status" className="absolute inset-x-3 top-14 z-[500] rounded-lg border border-amber-400/50 bg-[#07152b]/95 px-3 py-2 text-xs leading-relaxed text-amber-100 shadow-lg sm:inset-x-auto sm:right-16 sm:top-3 sm:max-w-sm">
+      {tileLoadError && <div role="status" className="absolute inset-x-3 top-14 z-[500] rounded-xl border border-amber-400/50 bg-[#060d1d]/95 px-3 py-2 text-xs leading-relaxed text-amber-100 shadow-lg sm:inset-x-auto sm:right-[4.25rem] sm:top-3 sm:max-w-sm">
         {lang === 'ar' ? 'تعذّر تحميل بعض أجزاء الخريطة. تحقق من الاتصال بالإنترنت أو أعد تحميل الصفحة.' : 'Some Esri imagery tiles failed to load; blank map areas may appear. Check the connection or reload the map.'}
       </div>}
 

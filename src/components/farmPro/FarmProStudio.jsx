@@ -91,6 +91,7 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
   const placeRequestRef = useRef(null);
   const [showValidation, setShowValidation] = useState(false);
   const latitudeRef = useRef(null);
+  const [coordsOpen, setCoordsOpen] = useState(false);
   const areaRef = useRef(null);
   const boundaryRef = useRef(null);
 
@@ -398,7 +399,8 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
       const typedDiffers = latitudeInput.trim() !== '' && longitudeInput.trim() !== '' && (latitude !== selectedLocation[0] || longitude !== selectedLocation[1]);
       if (!latitudeInput.trim() || !longitudeInput.trim() || !validateCoordinates(latitude, longitude).valid) {
         setLocationError(!latitudeInput.trim() || !longitudeInput.trim() ? (ar ? 'أدخل خط العرض وخط الطول.' : 'Enter both latitude and longitude.') : localizeGeometryError(validateCoordinates(latitude, longitude).error, lang));
-        latitudeRef.current?.focus();
+        setCoordsOpen(true);
+        setTimeout(() => latitudeRef.current?.focus(), 0);
         return false;
       }
       if (!pointAreaIsValid) { areaRef.current?.focus(); return false; }
@@ -411,8 +413,9 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
     return true;
   };
   if (validateRef) validateRef.current = validateForNext;
-  const modeButtonClass = (active) => `h-8 rounded-lg border px-2 py-1 text-xs font-semibold transition-colors ${active ? 'border-cyan-400 bg-cyan-800/70 text-white' : 'border-white/10 bg-[#081730] text-slate-300 hover:bg-[#0c2242]'}`;
-  const labelClass = 'block space-y-0.5 text-[11px] font-medium text-slate-200';
+  const modeButtonClass = (active) => `h-9 rounded-lg px-2 text-sm transition-colors ${active ? 'bg-[#0e1e38] font-semibold text-white shadow-[inset_0_0_0_1px_#1f3b6a]' : 'font-medium text-slate-300 hover:text-white'}`;
+  const panelIconClass = 'flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] border border-[#1f3b6a] bg-[#0a1528] text-slate-200 hover:border-cyan-400/50 hover:bg-[#0e1e38] disabled:opacity-45';
+  const labelClass = 'block space-y-1 text-xs font-medium text-slate-300';
 
   return (
     <div className={`relative flex w-full shrink-0 flex-col bg-[#050c18] ${activeStep === 0 ? 'min-h-full' : ''}`}>
@@ -440,8 +443,8 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
         </div>
 
         {/* Map hint: beside the zoom control, never under the farm tools. */}
-        <p className={`pointer-events-none absolute left-2 top-2 z-10 max-w-[calc(100%-4.5rem)] items-center gap-2 rounded-lg border border-white/15 bg-[#07152b]/95 px-3 py-2 text-xs text-slate-100 shadow-md sm:left-auto sm:right-16 sm:top-3 sm:max-w-xs sm:text-sm ${isPanelCollapsed ? 'flex' : 'flex sm:hidden lg:flex'}`}>
-          <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 text-cyan-300" />
+        <p className={`pointer-events-none absolute left-2 top-2 z-10 max-w-[calc(100%-4.5rem)] items-center gap-2 rounded-xl border border-[#1f3b6a] bg-[#060d1d]/92 px-3.5 py-1.5 text-xs sm:rounded-full text-slate-100 shadow-md backdrop-blur-sm sm:left-auto sm:right-[4.25rem] sm:top-3 sm:max-w-sm ${isPanelCollapsed ? 'flex' : 'flex sm:hidden lg:flex'}`}>
+          <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-cyan-300" />
           <span>{selectionMode === 'boundary'
             ? (ar ? 'اضغط لإضافة نقاط الحدود، واسحب النقاط لتعديلها' : 'Tap to add boundary points; drag a point to adjust it')
             : (ar ? 'اضغط على الخريطة لتحديد نقطة مرجعية للمزرعة' : 'Tap the map to set the farm reference point')}</span>
@@ -466,31 +469,39 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
             </button>
           </div>
         ) : (
-          <div className="relative z-20 m-2 flex flex-col gap-2 rounded-xl border border-white/15 bg-[#07152b] p-2.5 text-white shadow-2xl sm:absolute sm:m-0 sm:left-3 sm:top-3 sm:max-h-[calc(100%-1.5rem)] sm:w-[23.5rem] sm:max-w-[calc(100%-5rem)] sm:overflow-y-auto sm:overscroll-contain sm:p-3">
+          <div className="relative z-20 m-2 flex flex-col gap-3 rounded-2xl border border-[#1f3b6a] bg-[#060d1d]/95 p-3 text-white shadow-2xl backdrop-blur-sm sm:absolute sm:m-0 sm:left-3 sm:top-3 sm:max-h-[calc(100%-1.5rem)] sm:w-[24rem] sm:max-w-[calc(100%-5rem)] sm:overflow-y-auto sm:overscroll-contain sm:p-4">
 
             {/* Selected farm + collapse */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2">
                 <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 text-cyan-300" />
                 <div className="min-w-0">
-                  <div className="text-[11px] leading-tight text-slate-400">{ar ? 'المزرعة المحددة' : 'Selected farm'}</div>
-                  <div dir="auto" className="truncate text-xs sm:text-sm font-semibold leading-tight text-white">{selectedName}</div>
+                  <div className="text-xs leading-tight text-slate-400">{ar ? 'المزرعة المحددة' : 'Selected farm'}</div>
+                  <div dir="auto" className="truncate text-sm sm:text-base font-semibold leading-tight text-white">{selectedName}</div>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsPanelCollapsed(true)}
-                aria-expanded
-                aria-label={ar ? 'تصغير اللوحة لعرض الخريطة كاملة' : 'Collapse panel to view the full map'}
-                title={ar ? 'تصغير اللوحة' : 'Collapse panel'}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 text-slate-200 hover:bg-white/10"
-              >
-                <ChevronDown aria-hidden="true" className="h-4 w-4 rotate-180 sm:rotate-90" />
-              </button>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <button type="button" onClick={handleReloadPower} disabled={isNasaLoading || !farmSelection.valid} aria-label={isNasaLoading ? (ar ? 'جارٍ التحميل…' : 'Loading…') : (ar ? 'تحديث بيانات NASA POWER' : 'Reload NASA data')} title={ar ? 'تحديث بيانات NASA POWER' : 'Reload NASA data'} className={panelIconClass}>
+                  <RefreshCw aria-hidden="true" className={`h-4 w-4 ${isNasaLoading ? 'animate-spin' : ''}`} />
+                </button>
+                <button type="button" onClick={() => window.print()} aria-label={ar ? 'طباعة' : 'Print'} title={ar ? 'طباعة' : 'Print'} className={panelIconClass}>
+                  <Printer aria-hidden="true" className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPanelCollapsed(true)}
+                  aria-expanded
+                  aria-label={ar ? 'تصغير اللوحة لعرض الخريطة كاملة' : 'Collapse panel to view the full map'}
+                  title={ar ? 'تصغير اللوحة' : 'Collapse panel'}
+                  className={panelIconClass}
+                >
+                  <ChevronDown aria-hidden="true" className="h-4 w-4 rotate-180 sm:rotate-90 rtl:sm:-rotate-90" />
+                </button>
+              </div>
             </div>
 
-            <section className="space-y-2" aria-label={ar ? 'تحديد موقع ومساحة المزرعة' : 'Farm location and area selection'}>
-              <div className="grid grid-cols-2 gap-1.5">
+            <section className="space-y-3" aria-label={ar ? 'تحديد موقع ومساحة المزرعة' : 'Farm location and area selection'}>
+              <div className="grid grid-cols-2 gap-1 rounded-[11px] border border-[#162b4f] bg-[#030712] p-[3px]">
                 <button
                   type="button"
                   aria-pressed={selectionMode === 'point-area'}
@@ -510,8 +521,8 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
               </div>
 
               {selectionMode === 'point-area' ? (
-                <div className="space-y-2">
-                  <p className="text-[11px] leading-snug text-slate-300">{ar ? 'ابحث عن مكان، أو استخدم موقعك، أو اضغط على الخريطة، أو أدخل الإحداثيات. المساحة المُدخلة تقديرية حول نقطة واحدة.' : 'Search for a place, use your location, click the map or type coordinates. The entered area is an estimate around one reference point.'}</p>
+                <div className="space-y-3">
+                  <p className="text-xs leading-snug text-slate-300">{ar ? 'ابحث عن مكان، أو استخدم موقعك، أو اضغط على الخريطة، أو أدخل الإحداثيات. المساحة المُدخلة تقديرية حول نقطة واحدة.' : 'Search for a place, use your location, click the map or type coordinates. The entered area is an estimate around one reference point.'}</p>
                   <form role="search" onSubmit={handlePlaceSearch} className="space-y-1.5">
                     <label htmlFor="farm-place-search" className={labelClass}>
                       <span>{ar ? 'البحث عن مكان' : 'Search for a place'}</span>
@@ -522,16 +533,16 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
                         type="search"
                         value={placeQuery}
                         onChange={(event) => setPlaceQuery(event.target.value)}
-                        placeholder={ar ? 'مدينة أو قرية أو منطقة في أي مكان بالعالم' : 'City, village or region anywhere'}
+                        placeholder={ar ? 'اسم المكان' : 'Place name'}
                         autoComplete="off"
                         enterKeyHint="search"
                         aria-describedby="farm-place-status"
-                        className="field-control !min-h-8 h-8 min-w-0 flex-1 px-2 text-xs"
+                        className="field-control !min-h-10 h-10 min-w-0 flex-1 px-3 text-sm focus-visible:shadow-[0_0_0_4px_rgb(6_182_212_/_0.15)]"
                       />
-                      <button type="submit" disabled={placeStatus.state === 'searching'} aria-label={ar ? 'بحث' : 'Search'} title={ar ? 'بحث' : 'Search'} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-950/70 text-cyan-50 hover:bg-cyan-900/80 disabled:opacity-60">
+                      <button type="submit" disabled={placeStatus.state === 'searching'} aria-label={ar ? 'بحث' : 'Search'} title={ar ? 'بحث' : 'Search'} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-gradient-to-r from-blue-600 to-cyan-700 text-white hover:brightness-110 disabled:opacity-60 rtl:bg-gradient-to-l">
                         {placeStatus.state === 'searching' ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Search aria-hidden="true" className="h-4 w-4" />}
                       </button>
-                      <button type="button" onClick={handleUseMyLocation} disabled={placeStatus.state === 'locating'} className="flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-cyan-400/40 bg-cyan-950/70 px-2.5 text-xs font-semibold text-cyan-50 hover:bg-cyan-900/80 disabled:opacity-60">
+                      <button type="button" onClick={handleUseMyLocation} disabled={placeStatus.state === 'locating'} className="flex h-10 shrink-0 items-center gap-1.5 rounded-[11px] border border-[#1f3b6a] bg-[#0a1528] px-3 text-sm font-semibold text-slate-50 hover:border-cyan-400/50 hover:bg-[#0e1e38] disabled:opacity-60">
                         {placeStatus.state === 'locating' ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <LocateFixed aria-hidden="true" className="h-4 w-4" />}
                         <span>{ar ? 'موقعي' : 'My location'}</span>
                       </button>
@@ -539,51 +550,59 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
                   </form>
                   <p id="farm-place-status" role="status" aria-live="polite" className={`text-[11px] leading-snug ${placeStatus.state === 'error' || placeStatus.state === 'empty' ? 'text-amber-200' : 'text-slate-300'} ${placeStatus.message ? '' : 'sr-only'}`}>{placeStatus.message}</p>
                   {placeResults.length > 0 && (
-                    <div className="rounded-lg border border-white/10 bg-[#07152b]/95">
+                    <div className="overflow-hidden rounded-[11px] border border-[#162b4f] bg-[#0a1528]">
                       <ul aria-label={ar ? 'نتائج البحث' : 'Search results'} className="max-h-44 divide-y divide-white/5 overflow-y-auto">
                         {placeResults.map((place) => (
                           <li key={place.id}>
-                            <button type="button" onClick={() => handleSelectPlace(place)} className="flex w-full items-start gap-2 px-2.5 py-1.5 text-start hover:bg-cyan-900/40 focus-visible:bg-cyan-900/40">
+                            <button type="button" onClick={() => handleSelectPlace(place)} className="flex w-full items-start gap-2.5 px-3 py-2 text-start hover:bg-[#0e1e38] focus-visible:bg-[#0e1e38]">
                               <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
                               <span className="min-w-0">
-                                <span className="block truncate text-xs font-semibold text-white">{place.name}</span>
-                                <span className="block truncate text-[11px] text-slate-400">{place.displayName}</span>
+                                <span className="block truncate text-sm font-semibold text-white">{place.name}</span>
+                                <span className="block truncate text-xs text-slate-400">{place.displayName}</span>
                               </span>
                             </button>
                           </li>
                         ))}
                       </ul>
-                      <p className="border-t border-white/10 px-2.5 py-1 text-[10px] text-slate-400">
+                      <p className="border-t border-[#162b4f] px-3 py-1 text-xs text-slate-400">
                         {ar ? 'البحث: ' : 'Search: '}<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="underline hover:text-cyan-200">© OpenStreetMap contributors</a>
                       </p>
                     </div>
                   )}
-                  <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-1.5">
-                    <label className={labelClass}>
-                      <span>{ar ? 'خط العرض' : 'Latitude'}</span>
-                      <input ref={latitudeRef} inputMode="decimal" dir="ltr" value={latitudeInput} aria-invalid={Boolean(locationError) || undefined} onChange={(event) => setLatitudeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') handleApplyCoordinates(); }} className="field-control !min-h-8 h-8 px-2 text-xs" />
-                    </label>
-                    <label className={labelClass}>
-                      <span>{ar ? 'خط الطول' : 'Longitude'}</span>
-                      <input inputMode="decimal" dir="ltr" value={longitudeInput} onChange={(event) => setLongitudeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') handleApplyCoordinates(); }} className="field-control !min-h-8 h-8 px-2 text-xs" />
-                    </label>
-                    <button type="button" onClick={handleApplyCoordinates} className="h-8 shrink-0 rounded-lg border border-cyan-400/40 bg-cyan-950/70 px-2.5 text-xs font-semibold text-cyan-50 hover:bg-cyan-900/80">
-                      {ar ? 'تطبيق' : 'Apply'}
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <label className={labelClass}>
                       <span>{ar ? 'مساحة المزرعة' : 'Farm area'}</span>
-                      <input ref={areaRef} type="number" min="0" step="any" dir="ltr" value={areaInput} aria-invalid={!pointAreaIsValid} aria-describedby={!pointAreaIsValid ? 'farm-area-error' : undefined} onChange={(event) => setAreaInput(event.target.value)} className={`field-control !min-h-8 h-8 px-2 text-xs ${!pointAreaIsValid && showValidation ? 'ring-2 ring-rose-400' : ''}`} />
+                      <input ref={areaRef} type="number" min="0" step="any" dir="ltr" value={areaInput} aria-invalid={!pointAreaIsValid} aria-describedby={!pointAreaIsValid ? 'farm-area-error' : undefined} onChange={(event) => setAreaInput(event.target.value)} className={`field-control !min-h-10 h-10 px-2.5 text-sm ${!pointAreaIsValid && showValidation ? 'ring-2 ring-rose-400' : ''}`} />
                     </label>
                     <label className={labelClass}>
                       <span>{ar ? 'وحدة المساحة' : 'Area unit'}</span>
-                      <select value={areaUnit} onChange={(event) => handleAreaUnitChange(event.target.value)} className="field-control !min-h-8 h-8 px-2 text-xs">
+                      <select value={areaUnit} onChange={(event) => handleAreaUnitChange(event.target.value)} className="field-control !min-h-10 h-10 px-2.5 text-sm">
                         {Object.entries(FARM_AREA_UNITS).map(([unit, config]) => <option key={unit} value={unit}>{ar ? config.labelAr : config.labelEn}</option>)}
                       </select>
                     </label>
                   </div>
                   {!pointAreaIsValid && <p id="farm-area-error" role="alert" className="text-xs text-rose-300">{ar ? 'أدخل مساحة أكبر من الصفر وضمن الحد المقبول لمزرعة.' : 'Enter an area greater than zero and within a valid farm-size range.'}</p>}
+                  <div className="rounded-[11px] border border-dashed border-[#1f3b6a]">
+                    <button type="button" onClick={() => setCoordsOpen((open) => !open)} aria-expanded={coordsOpen} aria-controls="farm-coordinates" className="flex h-10 w-full items-center justify-between gap-2 rounded-[11px] px-3 text-sm text-slate-200 hover:bg-white/5">
+                      <span>{ar ? 'إدخال الإحداثيات يدويًا' : 'Enter coordinates instead'}</span>
+                      <ChevronDown aria-hidden="true" className={`h-4 w-4 text-slate-400 transition-transform ${coordsOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <div id="farm-coordinates" hidden={!coordsOpen} className="px-3 pb-3">
+                      <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-2">
+                        <label className={labelClass}>
+                          <span>{ar ? 'خط العرض' : 'Latitude'}</span>
+                          <input ref={latitudeRef} inputMode="decimal" dir="ltr" value={latitudeInput} aria-invalid={Boolean(locationError) || undefined} onChange={(event) => setLatitudeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') handleApplyCoordinates(); }} className="field-control !min-h-10 h-10 px-2.5 text-sm" />
+                        </label>
+                        <label className={labelClass}>
+                          <span>{ar ? 'خط الطول' : 'Longitude'}</span>
+                          <input inputMode="decimal" dir="ltr" value={longitudeInput} onChange={(event) => setLongitudeInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') handleApplyCoordinates(); }} className="field-control !min-h-10 h-10 px-2.5 text-sm" />
+                        </label>
+                        <button type="button" onClick={handleApplyCoordinates} className="h-10 shrink-0 rounded-[11px] border border-[#1f3b6a] bg-[#0a1528] px-3 text-sm font-semibold text-slate-50 hover:border-cyan-400/50 hover:bg-[#0e1e38]">
+                          {ar ? 'تطبيق' : 'Apply'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div ref={boundaryRef} tabIndex={-1} className={`space-y-2 rounded-lg outline-none ${showValidation && !boundaryValidation.valid ? 'ring-2 ring-rose-400 p-1.5' : ''}`}>
@@ -614,7 +633,7 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
 
               {locationError && <p role="alert" className="text-xs text-rose-300">{localizeGeometryError(locationError, lang)}</p>}
 
-              <dl className="surface-inset grid grid-cols-[auto_1fr] gap-x-2.5 gap-y-0.5 p-2 text-xs">
+              <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-xl border border-[#162b4f] bg-[#0a1528] p-3 text-sm">
                 <dt className="text-slate-400">{ar ? 'الموقع' : 'Location'}</dt>
                 <dd dir="auto" className="min-w-0 truncate text-slate-100">{selectedName}</dd>
                 <dt className="text-slate-400">{ar ? 'الإحداثيات' : 'Coords'}</dt>
@@ -628,27 +647,8 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
               </dl>
             </section>
 
-            <p className="text-[11px] leading-snug text-slate-400">{ar ? 'بعد الانتهاء اضغط «التالي»: يجري التحقق من الموقع والمساحة ثم حفظهما.' : 'When you are done, press Next below: the location and area are checked and saved.'}</p>
+            <p className="text-xs leading-snug text-slate-400">{ar ? 'بعد الانتهاء اضغط «التالي»: يجري التحقق من الموقع والمساحة ثم حفظهما.' : 'When you are done, press Next below: the location and area are checked and saved.'}</p>
 
-            <div className="grid shrink-0 grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={handleReloadPower}
-                disabled={isNasaLoading || !farmSelection.valid}
-                className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-white/10 px-2 text-[11px] font-semibold text-slate-100 hover:bg-white/10 disabled:opacity-45"
-              >
-                <RefreshCw aria-hidden="true" className={`h-3.5 w-3.5 shrink-0 ${isNasaLoading ? 'animate-spin' : ''}`} />
-                <span>{isNasaLoading ? (ar ? 'جارٍ التحميل…' : 'Loading…') : (ar ? 'تحديث بيانات NASA POWER' : 'Reload NASA data')}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-white/10 px-2 text-[11px] font-semibold text-slate-100 hover:bg-white/10"
-              >
-                <Printer aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                <span>{ar ? 'طباعة' : 'Print'}</span>
-              </button>
-            </div>
           </div>
         )}
       </div>

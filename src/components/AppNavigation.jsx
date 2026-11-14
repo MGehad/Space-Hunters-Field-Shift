@@ -29,34 +29,36 @@ export default function AppNavigation({ currentScreen, onBack, onHome, onOpenMap
   }, [menuOpen]);
 
   return (
-    <header className="app-navigation relative z-[60] shrink-0 border-b border-white/10 bg-[#030914]" dir={isRtl ? 'rtl' : 'ltr'}>
-      <div className="mx-auto flex min-h-11 w-full max-w-[1850px] items-center gap-1.5 px-2 py-1 pt-[max(.25rem,env(safe-area-inset-top))] sm:gap-2 sm:px-5 lg:px-8">
+    <header className="app-navigation relative z-[60] shrink-0 border-b border-[#162b4f] bg-[#060d1d]" dir={isRtl ? 'rtl' : 'ltr'}>
+      <div className="mx-auto flex min-h-[3.5rem] w-full max-w-[1850px] items-center gap-1.5 px-2 py-1.5 pt-[max(.375rem,env(safe-area-inset-top))] sm:gap-2.5 sm:px-4 lg:px-5">
         <div className="flex shrink-0 items-center gap-1.5">
-          <button type="button" onClick={onBack} aria-label={lang === 'ar' ? 'العودة إلى الشاشة السابقة' : 'Go back to the previous screen'} className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 text-xs sm:text-sm font-semibold text-slate-100 hover:border-cyan-400/50 hover:bg-cyan-950/60">
+          <button type="button" onClick={onBack} aria-label={lang === 'ar' ? 'العودة إلى الشاشة السابقة' : 'Go back to the previous screen'} title={lang === 'ar' ? 'رجوع' : 'Back'} className="app-header-icon">
             <BackIcon aria-hidden="true" className="h-4 w-4" />
-            <span>{lang === 'ar' ? 'رجوع' : 'Back'}</span>
           </button>
-          <button type="button" onClick={onHome} aria-label={lang === 'ar' ? 'العودة إلى الصفحة الرئيسية' : 'Return to Home'} title={lang === 'ar' ? 'الرئيسية' : 'Home'} className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-950/40 text-cyan-200 hover:bg-cyan-900/70">
+          <button type="button" onClick={onHome} aria-label={lang === 'ar' ? 'العودة إلى الصفحة الرئيسية' : 'Return to Home'} title={lang === 'ar' ? 'الرئيسية' : 'Home'} className="app-header-icon">
             <Home aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="min-w-0 flex-1 px-1 flex items-baseline gap-2">
+        {/* Default title; a screen can replace it on wide screens through the slot below. */}
+        <div className="app-default-title min-w-0 flex-1 px-1 flex flex-col justify-center">
           <p className="truncate text-sm sm:text-base font-semibold leading-tight text-white max-[380px]:hidden">{title}</p>
-          <p className="truncate text-[10px] font-medium uppercase tracking-[0.12em] text-cyan-300/75 hidden sm:inline">Space Hunters · Field Shift</p>
+          <p className="truncate text-xs font-semibold uppercase tracking-[0.1em] text-cyan-300 hidden sm:block">Space Hunters · Field Shift</p>
         </div>
+        {/* Screens with steps portal their title and step bar here (shown from 1280 px). */}
+        <div id="app-header-slot" className="contents" />
 
-        <nav aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'} className="hidden shrink-0 items-center gap-1 lg:flex">
-          <button type="button" onClick={onOpenMap} aria-current={currentScreen === 'map' ? 'page' : undefined} className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs sm:text-sm font-semibold text-slate-200 hover:bg-white/10 aria-[current=page]:bg-blue-900/60 aria-[current=page]:text-white">
-            <Map aria-hidden="true" className="h-4 w-4" />{lang === 'ar' ? 'المهام التعليمية' : 'Educational missions'}
+        <nav aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'} className="hidden shrink-0 items-center rounded-xl border border-[#162b4f] bg-[#0a1528] p-[3px] lg:flex">
+          <button type="button" onClick={onOpenMap} aria-current={currentScreen === 'map' ? 'page' : undefined} aria-label={lang === 'ar' ? 'المهام التعليمية' : 'Educational missions'} className="app-segment">
+            <Map aria-hidden="true" className="h-4 w-4" />{lang === 'ar' ? 'المهام' : 'Missions'}
           </button>
-          <button type="button" onClick={onOpenFarm} aria-current={['farmPro', 'universalBuilder'].includes(currentScreen) ? 'page' : undefined} className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs sm:text-sm font-semibold text-slate-200 hover:bg-white/10 aria-[current=page]:bg-cyan-950/70 aria-[current=page]:text-white">
-            <Sprout aria-hidden="true" className="h-4 w-4" />{lang === 'ar' ? 'تحليل المزرعة' : 'Farm analysis'}
+          <button type="button" onClick={onOpenFarm} aria-current={['farmPro', 'universalBuilder'].includes(currentScreen) ? 'page' : undefined} aria-label={lang === 'ar' ? 'تحليل المزرعة' : 'Farm analysis'} className="app-segment">
+            <Sprout aria-hidden="true" className="h-4 w-4" />{lang === 'ar' ? 'المزرعة' : 'Farm'}
           </button>
         </nav>
 
         <div className="relative shrink-0">
-          <button type="button" className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-100 hover:bg-white/10" aria-label={lang === 'ar' ? 'فتح قائمة الأقسام' : 'Open navigation and resources'} aria-expanded={menuOpen} aria-controls="app-navigation-menu" onClick={() => setMenuOpen((open) => !open)}>
+          <button type="button" className="app-header-icon" aria-label={lang === 'ar' ? 'فتح قائمة الأقسام' : 'Open navigation and resources'} aria-expanded={menuOpen} aria-controls="app-navigation-menu" onClick={() => setMenuOpen((open) => !open)}>
             {menuOpen ? <X aria-hidden="true" className="h-4 w-4" /> : <Menu aria-hidden="true" className="h-4 w-4" />}
           </button>
           {menuOpen && <div className="fixed inset-0 z-[65]" onClick={() => setMenuOpen(false)} />}
@@ -69,7 +71,7 @@ export default function AppNavigation({ currentScreen, onBack, onHome, onOpenMap
           </div>}
         </div>
 
-        <button type="button" onClick={toggleLanguage} className="flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-cyan-500/30 bg-[#092244] px-2.5 text-xs sm:text-sm font-semibold text-cyan-100 hover:bg-[#10305e]" aria-label={lang === 'ar' ? 'Switch language to English' : 'تغيير اللغة إلى العربية'}>
+        <button type="button" onClick={toggleLanguage} className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-[10px] border border-[#1f3b6a] bg-[#0a1528] px-3 text-xs sm:text-sm font-semibold text-slate-50 hover:border-cyan-400/50 hover:bg-[#0e1e38]" aria-label={lang === 'ar' ? 'Switch language to English' : 'تغيير اللغة إلى العربية'}>
           <Languages aria-hidden="true" className="h-4 w-4" />
           <span>{lang === 'ar' ? 'EN' : 'عربي'}</span>
         </button>

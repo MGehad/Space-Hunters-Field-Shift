@@ -176,22 +176,22 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
       {/* ═══════════════════════════════════════════════════════════
           MOBILE TOP SUB-BAR (Visible on < lg screens)
           ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden z-30 flex shrink-0 items-center justify-between gap-1.5 border-b border-white/10 bg-[#051329] px-2 py-1.5">
-        <div className="flex-1 grid grid-cols-3 gap-1">
+      <div className="lg:hidden z-30 flex shrink-0 items-center justify-between gap-1.5 border-b border-[#162b4f] bg-[#060d1d] px-2 py-1.5">
+        <div className="flex-1 grid grid-cols-3 gap-1 rounded-xl border border-[#162b4f] bg-[#0a1528] p-[3px]">
           {[
-            { id: 'map', label: lang === 'ar' ? '🗺️ الخريطة' : '🗺️ Map' },
-            { id: 'details', label: lang === 'ar' ? '📋 التفاصيل' : '📋 Details' },
-            { id: 'missions', label: lang === 'ar' ? '🎯 المهمات' : '🎯 Missions' },
+            { id: 'map', label: lang === 'ar' ? 'الخريطة' : 'Map' },
+            { id: 'details', label: lang === 'ar' ? 'التفاصيل' : 'Details' },
+            { id: 'missions', label: lang === 'ar' ? 'المهمات' : 'Missions' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setMobileView(tab.id)}
               type="button"
               aria-pressed={mobileView === tab.id}
-              className={`min-h-11 truncate rounded-lg px-1 text-center text-sm transition-colors ${
+              className={`min-h-10 truncate rounded-[9px] px-1 text-center text-sm transition-colors ${
                 mobileView === tab.id
-                  ? 'bg-cyan-700 font-semibold text-white'
-                  : 'border border-white/10 bg-[#081838] text-slate-200 hover:bg-[#0c2242]'
+                  ? 'bg-[#0e1e38] font-semibold text-white shadow-[inset_0_0_0_1px_#1f3b6a]'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               {tab.label}
@@ -203,7 +203,7 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
         <button
           onClick={() => recenterMap()}
           type="button"
-          className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-cyan-400/40 bg-[#081d3d] px-3 text-sm text-cyan-100 hover:bg-[#0c2a57]"
+          className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-[10px] border border-[#1f3b6a] bg-[#0a1528] px-3 text-sm text-slate-100 hover:bg-[#0e1e38]"
           aria-label={lang === 'ar' ? 'تركيز الخريطة' : 'Recenter Map'}
         >
           <Compass aria-hidden="true" className="h-4 w-4 text-cyan-300" />
@@ -232,11 +232,11 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
         {/* Desktop Compass Widget */}
         <div
           onClick={(e) => { e.stopPropagation(); recenterMap(); }}
-          className="hidden lg:flex absolute top-11 left-[250px] z-30 items-center gap-1.5 px-3 py-1.5 bg-[#061633]/95 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 hover:text-white rounded-lg backdrop-blur-md shadow-xl pointer-events-auto cursor-pointer transition-all active:scale-95 group"
+          className="hidden lg:flex absolute top-3 left-[252px] z-30 h-9 items-center gap-1.5 px-3 bg-[#060d1d]/92 border border-[#1f3b6a] hover:border-cyan-400/50 text-slate-100 rounded-[10px] backdrop-blur-md shadow-xl pointer-events-auto cursor-pointer transition-colors group"
           title={lang === 'ar' ? mapControlsData.recenterTooltipAr : mapControlsData.recenterTooltipEn}
         >
           <Compass className={`w-4 h-4 text-cyan-300 transition-transform group-hover:rotate-45 ${isDragging ? 'animate-spin' : ''}`} />
-          <span className="text-2xs font-mono font-bold tracking-wider">
+          <span className="text-xs font-semibold">
             {lang === 'ar' ? mapControlsData.recenterBtnAr : mapControlsData.recenterBtnEn}
           </span>
         </div>
@@ -277,7 +277,7 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
                   <h3 className="truncate text-base font-semibold text-white">
                     {lang === 'ar' ? selectedMission.countryAr : selectedMission.countryEn}
                   </h3>
-                  <span className="text-2xs font-mono font-bold text-cyan-300 bg-blue-950/90 px-1.5 py-0.5 rounded border border-cyan-500/30 shrink-0">
+                  <span className="text-xs font-semibold text-cyan-300 bg-[#0e1e38] px-1.5 py-0.5 rounded-md border border-[#1f3b6a] shrink-0">
                     #{selectedMission.code}
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
             <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={handlePrevMission}
-                className="min-h-11 min-w-11 bg-[#0a1e3f] hover:bg-[#122e5e] border border-cyan-400/40 rounded-xl flex items-center justify-center text-cyan-300 font-bold transition-colors cursor-pointer"
+                className="min-h-11 min-w-11 bg-[#0a1528] hover:bg-[#0e1e38] border border-[#1f3b6a] rounded-xl flex items-center justify-center text-slate-100 transition-colors cursor-pointer"
                 type="button"
                 aria-label={lang === 'ar' ? 'المهمة السابقة' : 'Previous Mission'}
               >
@@ -299,7 +299,7 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
               </button>
               <button
                 onClick={handleNextMission}
-                className="min-h-11 min-w-11 bg-[#0a1e3f] hover:bg-[#122e5e] border border-cyan-400/40 rounded-xl flex items-center justify-center text-cyan-300 font-bold transition-colors cursor-pointer"
+                className="min-h-11 min-w-11 bg-[#0a1528] hover:bg-[#0e1e38] border border-[#1f3b6a] rounded-xl flex items-center justify-center text-slate-100 transition-colors cursor-pointer"
                 type="button"
                 aria-label={lang === 'ar' ? 'المهمة التالية' : 'Next Mission'}
               >
@@ -312,10 +312,11 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
           <div className="grid grid-cols-1 gap-2">
             <button
               onClick={onStartMission}
-              className="min-h-11 px-3 bg-cyan-700 hover:bg-cyan-600 text-white rounded-xl text-sm font-bold border border-cyan-300/30 transition-colors text-center flex items-center justify-center gap-1.5 cursor-pointer"
+              type="button"
+              className="btn-primary w-full text-sm"
             >
-              <span>🚀</span>
               <span>{detail?.startLabel || (lang === 'ar' ? 'ابدأ المهمة' : 'Start Mission')}</span>
+              {isRtl ? <ArrowLeft aria-hidden="true" className="h-4 w-4" /> : <ArrowRight aria-hidden="true" className="h-4 w-4" />}
             </button>
           </div>
 
@@ -332,7 +333,7 @@ export default function WorldMapScreen({ missions, selectedMission, setSelectedM
             onStartMission={onStartMission}
             onOpenFarmData={onOpenFarmData}
             detail={detail}
-            className="w-full max-w-lg mx-auto p-3.5 bg-[#061633]/98 border border-cyan-400/60 shadow-2xl backdrop-blur-xl flex flex-col gap-3 rounded-2xl"
+            className="w-full max-w-lg mx-auto flex flex-col overflow-hidden rounded-2xl border border-[#1f3b6a] bg-[#0a1528] shadow-2xl"
             isMobile={true}
             onCloseMobile={() => setMobileView('map')}
           />

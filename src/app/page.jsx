@@ -230,7 +230,7 @@ export default function Home() {
 
       {/* Project and mission identification; challenge branding appears on the landing screen. */}
       <footer className={`z-20 w-full shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-0.5 border-t border-white/5 bg-[#030712] px-3 py-1.5 text-2xs text-slate-400 sm:px-4 ${
-        currentScreen === 'start' ? 'flex' : 'hidden lg:flex'
+        currentScreen === 'start' ? 'flex' : 'hidden'
       }`}>
         <span>Team Space Hunters</span>
         <span className="min-w-0 truncate">

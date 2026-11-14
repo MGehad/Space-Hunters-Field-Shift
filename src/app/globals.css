@@ -87,6 +87,54 @@ html[lang='ar'] [class*='tracking-'] {
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
 
+  /* ── Refreshed controls (shared by the farm workflow and the missions) ── */
+  .app-header-icon {
+    display: flex; height: 2.5rem; width: 2.5rem; flex-shrink: 0; align-items: center; justify-content: center;
+    border-radius: 0.625rem; border: 1px solid #1f3b6a; background-color: #0a1528; color: #e2e8f0;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .app-header-icon:hover { border-color: rgb(34 211 238 / 0.5); background-color: #0e1e38; }
+  .app-segment {
+    display: flex; height: 2.125rem; align-items: center; gap: 0.375rem; border-radius: 0.5625rem;
+    padding: 0 0.75rem; font-size: var(--type-support); font-weight: 500; color: #cbd5e1;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .app-segment:hover { color: #fff; background-color: rgb(255 255 255 / 0.05); }
+  .app-segment[aria-current="page"] { background-color: #0e1e38; color: #f8fafc; font-weight: 600; box-shadow: inset 0 0 0 1px #1f3b6a; }
+  .btn-primary {
+    display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: 0.5rem;
+    border-radius: 0.75rem; padding: 0 1.25rem; font-weight: 700; color: #fff;
+    background-image: linear-gradient(90deg, #2563eb, #0e7490);
+    box-shadow: 0 6px 18px rgb(6 182 212 / 0.22);
+    transition: filter 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  [dir="rtl"] .btn-primary { background-image: linear-gradient(270deg, #2563eb, #0e7490); }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-primary:disabled { opacity: 0.4; box-shadow: none; filter: none; cursor: not-allowed; }
+  .btn-secondary {
+    display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: 0.5rem;
+    border-radius: 0.75rem; border: 1px solid #1f3b6a; padding: 0 1rem; font-weight: 600; color: #e2e8f0;
+    background-color: transparent; transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-secondary:hover { background-color: #0e1e38; border-color: rgb(34 211 238 / 0.45); }
+  .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .step-pill {
+    display: flex; height: 2.125rem; min-width: 0; align-items: center; gap: 0.5rem; border-radius: 999px;
+    padding: 0 0.625rem 0 0.375rem; font-size: var(--type-meta); color: #94a3b8; white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  [dir="rtl"] .step-pill { padding: 0 0.375rem 0 0.625rem; }
+  .step-pill:not(:disabled):hover { color: #fff; background-color: rgb(255 255 255 / 0.05); }
+  .step-pill:disabled { cursor: not-allowed; color: #64748b; }
+  .step-pill[aria-current="step"] { color: #fff; font-weight: 600; background-image: linear-gradient(90deg, #2563eb, #0e7490); }
+  [dir="rtl"] .step-pill[aria-current="step"] { background-image: linear-gradient(270deg, #2563eb, #0e7490); }
+  .step-pill-number {
+    display: flex; height: 1.375rem; width: 1.375rem; flex-shrink: 0; align-items: center; justify-content: center;
+    border-radius: 999px; border: 1px solid #1f3b6a; font-size: 0.75rem; font-weight: 600;
+  }
+  .step-pill[aria-current="step"] .step-pill-number { border-color: transparent; background-color: rgb(255 255 255 / 0.22); }
+  .step-pill-number[data-done="true"] { border-color: transparent; background-color: rgb(5 150 105 / 0.85); color: #fff; }
+
   /* Calm card surfaces shared by the workflow steps. */
   .surface-card {
     background-color: var(--surface-1);
@@ -102,7 +150,7 @@ html[lang='ar'] [class*='tracking-'] {
   .field-control {
     min-height: 2.75rem;
     width: 100%;
-    border-radius: 0.5rem;
+    border-radius: 0.6875rem;
     border: 1px solid var(--border-strong);
     background-color: #081426;
     padding: 0.5rem 0.75rem;
@@ -267,3 +315,14 @@ details > summary {
   .report-page .report-compact { font-size: 8.5px; }
   .report-page .report-compact th, .report-page .report-compact td { padding: 2px 3px; }
 }
+
+/* A screen that portals its step bar into the header replaces the default title from 1280 px. */
+@media (min-width: 1280px) {
+  .app-navigation:has(#app-header-slot > [data-header-steps]) .app-default-title { display: none; }
+}
+
+/* Map controls in the site's dark theme instead of Leaflet's white defaults. */
+.leaflet-container .leaflet-bar { border: 1px solid #1f3b6a !important; border-radius: 0.75rem !important; overflow: hidden; box-shadow: 0 8px 20px rgb(0 0 0 / 0.35) !important; }
+.leaflet-container .leaflet-bar a { width: 2.625rem !important; height: 2.625rem !important; line-height: 2.625rem !important; background-color: #060d1d !important; color: #f8fafc !important; border-bottom-color: #1f3b6a !important; font-size: 1.25rem !important; }
+.leaflet-container .leaflet-bar a:hover { background-color: #0e1e38 !important; }
+.leaflet-container .leaflet-bar a.leaflet-disabled { color: #475569 !important; }
