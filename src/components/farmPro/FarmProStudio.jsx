@@ -7,6 +7,7 @@ import { useWorkingSession } from '../../context/WorkingSessionContext';
 import { getPowerClimatology } from '../../services/nasa/powerProvider';
 import { fuseEnvironmentalObservations } from '../../analysis/environmental/fusion';
 import EnvironmentalAnalysisDashboard from './EnvironmentalAnalysisDashboard';
+import { searchPlaces, reversePlace, parseCoordinateQuery, shortPlaceLabel } from '../../services/geocoding/nominatim';
 import {
   FARM_AREA_UNITS,
   convertArea,
@@ -18,8 +19,7 @@ import {
 } from '../../utils/farmGeometry';
 import {
   RefreshCw,
-  MapPin, X,
- 
+  MapPin, X, Search, LocateFixed, Loader2,
   Printer, ChevronDown, SlidersHorizontal
 } from 'lucide-react';
 
@@ -38,22 +38,6 @@ const RealSatelliteLeafletMap = dynamic(
   () => import('./RealSatelliteLeafletMap'),
   { ssr: false, loading: MapLoadingPlaceholder }
 );
-
-// Quick-pick farming areas: names and approximate centre coordinates only.
-const PRESET_LOCATIONS = [
-  { nameAr: 'المنصورة وأجا (الدقهلية)', nameEn: 'Mansoura & Aga (Dakahlia)', center: [30.825, 31.310], tag: 'مصر 🇪🇬' },
-  { nameAr: 'كفر الشيخ (شمال الدلتا والبرلس)', nameEn: 'Kafr El-Sheikh (North Delta)', center: [31.110, 30.938], tag: 'مصر 🇪🇬' },
-  { nameAr: 'طنطا وزفتى (الغربية)', nameEn: 'Tanta & Zefta (Gharbia)', center: [30.786, 31.000], tag: 'مصر 🇪🇬' },
-  { nameAr: 'الزقازيق والصالحية (الشرقية)', nameEn: 'Zagazig & Salheya (Sharqia)', center: [30.587, 31.502], tag: 'مصر 🇪🇬' },
-  { nameAr: 'دمنهور والنوبارية (البحيرة)', nameEn: 'Damanhur & Nubaria (Beheira)', center: [31.036, 30.470], tag: 'مصر 🇪🇬' },
-  { nameAr: 'المنيا ووادي النيل (الصعيد)', nameEn: 'Minya & Nile Valley', center: [28.109, 30.750], tag: 'مصر 🇪🇬' },
-  { nameAr: 'الوادي الجديد (الواحات)', nameEn: 'New Valley & Oases', center: [25.451, 30.547], tag: 'مصر 🇪🇬' },
-  { nameAr: 'كانساس وحوض أوغالالا (أمريكا)', nameEn: 'Kansas & Ogallala (USA)', center: [38.526, -99.300], tag: 'أمريكا 🇺🇸' },
-  { nameAr: 'تكساس وبانهاندل (أمريكا)', nameEn: 'Texas Panhandle (USA)', center: [35.221, -101.831], tag: 'أمريكا 🇺🇸' },
-  { nameAr: 'لوديانا، البنجاب (الهند)', nameEn: 'Ludhiana, Punjab (India)', center: [30.901, 75.857], tag: 'الهند 🇮🇳' },
-  { nameAr: 'ماتو غروسو (البرازيل)', nameEn: 'Mato Grosso & Cerrado (Brazil)', center: [-12.681, -55.721], tag: 'البرازيل 🇧🇷' },
-  { nameAr: 'حوض موراي-دارلينغ (أستراليا)', nameEn: 'Murray-Darling Basin (Australia)', center: [-34.520, 145.480], tag: 'أستراليا 🇦🇺' },
-];
 
 function localizeGeometryError(error, lang) {
   if (lang !== 'ar') return error || '';
@@ -100,7 +84,11 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
   const [powerRequestNonce, setPowerRequestNonce] = useState(0);
 
   // Next-button validation state
-  const [presetValue, setPresetValue] = useState('');
+  // Place search (OpenStreetMap Nominatim) and browser geolocation.
+  const [placeQuery, setPlaceQuery] = useState('');
+  const [placeResults, setPlaceResults] = useState([]);
+  const [placeStatus, setPlaceStatus] = useState({ state: 'idle', message: '' }); // idle | searching | locating | done | empty | error
+  const placeRequestRef = useRef(null);
   const [showValidation, setShowValidation] = useState(false);
   const latitudeRef = useRef(null);
   const areaRef = useRef(null);
@@ -257,10 +245,95 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
     setAreaUnit(nextUnit);
   };
 
-  const handleSelectPreset = (value) => {
-    setPresetValue(value);
-    const loc = PRESET_LOCATIONS[Number(value)];
-    if (loc) applyPointLocation(loc.center[0], loc.center[1], lang === 'ar' ? loc.nameAr : loc.nameEn);
+  useEffect(() => () => placeRequestRef.current?.abort(), []);
+
+  const startPlaceRequest = () => {
+    placeRequestRef.current?.abort();
+    const controller = new AbortController();
+    placeRequestRef.current = controller;
+    return controller;
+  };
+
+  const handlePlaceSearch = async (event) => {
+    event?.preventDefault();
+    const query = placeQuery.trim();
+    if (query.length < 2) {
+      setPlaceResults([]);
+      setPlaceStatus({ state: 'error', message: ar ? 'اكتب اسم مكان من حرفين على الأقل.' : 'Type at least two characters of a place name.' });
+      return;
+    }
+    // Typed coordinates are applied directly, without a network request.
+    const coordinates = parseCoordinateQuery(query);
+    if (coordinates) {
+      setPlaceResults([]);
+      setPlaceStatus({ state: 'idle', message: '' });
+      applyPointLocation(coordinates.latitude, coordinates.longitude, `${coordinates.latitude.toFixed(4)}°, ${coordinates.longitude.toFixed(4)}°`);
+      return;
+    }
+    const controller = startPlaceRequest();
+    setPlaceStatus({ state: 'searching', message: ar ? 'جارٍ البحث…' : 'Searching…' });
+    try {
+      const results = await searchPlaces(query, { lang, signal: controller.signal });
+      if (controller.signal.aborted) return;
+      setPlaceResults(results);
+      setPlaceStatus(results.length
+        ? { state: 'done', message: ar ? `${results.length === 1 ? 'نتيجة واحدة' : results.length === 2 ? 'نتيجتان' : `${results.length.toLocaleString('ar-EG')} نتائج`}؛ اختر المكان المقصود.` : `${results.length} result${results.length === 1 ? '' : 's'}; choose the place you mean.` }
+        : { state: 'empty', message: ar ? 'لم يُعثر على مكان بهذا الاسم. جرّب اسمًا آخر أو أضف اسم الدولة.' : 'No place found with that name. Try another spelling or add the country.' });
+    } catch (error) {
+      if (controller.signal.aborted || error?.code === 'aborted') return;
+      setPlaceResults([]);
+      setPlaceStatus({ state: 'error', message: error?.code === 'rate-limited'
+        ? (ar ? 'خدمة البحث مشغولة الآن؛ حاول بعد لحظات.' : 'The search service is busy; try again in a moment.')
+        : (ar ? 'تعذّر الوصول إلى خدمة البحث. تحقّق من الاتصال، أو اضغط على الخريطة، أو أدخل الإحداثيات.' : 'The search service could not be reached. Check your connection, click the map or type coordinates.') });
+    }
+  };
+
+  const handleSelectPlace = (place) => {
+    const label = shortPlaceLabel(place.displayName) || place.name;
+    if (applyPointLocation(Number(place.latitude.toFixed(6)), Number(place.longitude.toFixed(6)), label)) {
+      setPlaceQuery(place.name || label);
+      setPlaceResults([]);
+      setPlaceStatus({ state: 'idle', message: '' });
+    }
+  };
+
+  const handleUseMyLocation = () => {
+    setPlaceResults([]);
+    if (typeof navigator === 'undefined' || !navigator.geolocation || (typeof window !== 'undefined' && window.isSecureContext === false)) {
+      setPlaceStatus({ state: 'error', message: ar ? 'تحديد الموقع غير متاح في هذا المتصفح أو على اتصال غير آمن (يتطلب HTTPS).' : 'Location is not available in this browser or on an insecure connection (HTTPS is required).' });
+      return;
+    }
+    const controller = startPlaceRequest();
+    setPlaceStatus({ state: 'locating', message: ar ? 'جارٍ تحديد موقعك… وافق على طلب الإذن في المتصفح.' : 'Finding your location… allow the browser permission request.' });
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        if (controller.signal.aborted) return;
+        const latitude = Number(position.coords.latitude.toFixed(6));
+        const longitude = Number(position.coords.longitude.toFixed(6));
+        const accuracy = Math.round(position.coords.accuracy || 0);
+        const fallback = ar ? `موقعي (${latitude.toFixed(4)}°، ${longitude.toFixed(4)}°)` : `My location (${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°)`;
+        if (!applyPointLocation(latitude, longitude, fallback)) return;
+        const accuracyText = accuracy ? (ar ? ` الدقة نحو ±${accuracy} م.` : ` Accuracy about ±${accuracy} m.`) : '';
+        setPlaceStatus({ state: 'done', message: (ar ? 'تم تحديد موقعك.' : 'Your location was set.') + accuracyText });
+        // Best effort: replace the coordinate label with the place name.
+        try {
+          const name = await reversePlace(latitude, longitude, { lang, signal: controller.signal });
+          if (name && !controller.signal.aborted) {
+            setLocationName((current) => (current === fallback ? (ar ? `موقعي: ${name}` : `My location: ${name}`) : current));
+          }
+        } catch { /* keep the coordinate label */ }
+      },
+      (error) => {
+        if (controller.signal.aborted) return;
+        const messages = {
+          1: ar ? 'لم يُسمح بالوصول إلى الموقع. فعّل إذن الموقع لهذا الموقع من إعدادات المتصفح ثم حاول مجددًا.' : 'Location permission was denied. Allow location access for this site in your browser settings, then try again.',
+          2: ar ? 'تعذّر تحديد موقعك الآن. تأكد من تشغيل خدمات الموقع في جهازك.' : 'Your location could not be determined. Check that location services are on for your device.',
+          3: ar ? 'انتهت مهلة تحديد الموقع؛ حاول مجددًا.' : 'Finding your location took too long; try again.',
+        };
+        setPlaceStatus({ state: 'error', message: messages[error?.code] || messages[2] });
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
   };
 
   // Click on map to place beacon
@@ -438,14 +511,53 @@ export default function FarmProStudio({ onEditFarm, validateRef, activeStep = 0 
 
               {selectionMode === 'point-area' ? (
                 <div className="space-y-2">
-                  <p className="text-[11px] leading-snug text-slate-300">{ar ? 'اضغط على الخريطة، أو أدخل الإحداثيات، أو اختر منطقة مرجعية. المساحة المُدخلة تقديرية حول نقطة واحدة.' : 'Click the map, type coordinates or pick a reference area. The entered area is an estimate around one reference point.'}</p>
-                  <label className={labelClass}>
-                    <span>{ar ? 'منطقة زراعية مرجعية (اختياري)' : 'Reference agricultural area (optional)'}</span>
-                    <select value={presetValue} onChange={(event) => handleSelectPreset(event.target.value)} className="field-control !min-h-8 h-8 px-2 text-xs">
-                      <option value="">{ar ? '— اختر —' : '— Choose —'}</option>
-                      {PRESET_LOCATIONS.map((loc, index) => <option key={loc.nameEn} value={String(index)}>{ar ? loc.nameAr : loc.nameEn}</option>)}
-                    </select>
-                  </label>
+                  <p className="text-[11px] leading-snug text-slate-300">{ar ? 'ابحث عن مكان، أو استخدم موقعك، أو اضغط على الخريطة، أو أدخل الإحداثيات. المساحة المُدخلة تقديرية حول نقطة واحدة.' : 'Search for a place, use your location, click the map or type coordinates. The entered area is an estimate around one reference point.'}</p>
+                  <form role="search" onSubmit={handlePlaceSearch} className="space-y-1.5">
+                    <label htmlFor="farm-place-search" className={labelClass}>
+                      <span>{ar ? 'البحث عن مكان' : 'Search for a place'}</span>
+                    </label>
+                    <div className="flex items-stretch gap-1.5">
+                      <input
+                        id="farm-place-search"
+                        type="search"
+                        value={placeQuery}
+                        onChange={(event) => setPlaceQuery(event.target.value)}
+                        placeholder={ar ? 'مدينة أو قرية أو منطقة في أي مكان بالعالم' : 'City, village or region anywhere'}
+                        autoComplete="off"
+                        enterKeyHint="search"
+                        aria-describedby="farm-place-status"
+                        className="field-control !min-h-8 h-8 min-w-0 flex-1 px-2 text-xs"
+                      />
+                      <button type="submit" disabled={placeStatus.state === 'searching'} aria-label={ar ? 'بحث' : 'Search'} title={ar ? 'بحث' : 'Search'} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-950/70 text-cyan-50 hover:bg-cyan-900/80 disabled:opacity-60">
+                        {placeStatus.state === 'searching' ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Search aria-hidden="true" className="h-4 w-4" />}
+                      </button>
+                      <button type="button" onClick={handleUseMyLocation} disabled={placeStatus.state === 'locating'} className="flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-cyan-400/40 bg-cyan-950/70 px-2.5 text-xs font-semibold text-cyan-50 hover:bg-cyan-900/80 disabled:opacity-60">
+                        {placeStatus.state === 'locating' ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <LocateFixed aria-hidden="true" className="h-4 w-4" />}
+                        <span>{ar ? 'موقعي' : 'My location'}</span>
+                      </button>
+                    </div>
+                  </form>
+                  <p id="farm-place-status" role="status" aria-live="polite" className={`text-[11px] leading-snug ${placeStatus.state === 'error' || placeStatus.state === 'empty' ? 'text-amber-200' : 'text-slate-300'} ${placeStatus.message ? '' : 'sr-only'}`}>{placeStatus.message}</p>
+                  {placeResults.length > 0 && (
+                    <div className="rounded-lg border border-white/10 bg-[#07152b]/95">
+                      <ul aria-label={ar ? 'نتائج البحث' : 'Search results'} className="max-h-44 divide-y divide-white/5 overflow-y-auto">
+                        {placeResults.map((place) => (
+                          <li key={place.id}>
+                            <button type="button" onClick={() => handleSelectPlace(place)} className="flex w-full items-start gap-2 px-2.5 py-1.5 text-start hover:bg-cyan-900/40 focus-visible:bg-cyan-900/40">
+                              <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
+                              <span className="min-w-0">
+                                <span className="block truncate text-xs font-semibold text-white">{place.name}</span>
+                                <span className="block truncate text-[11px] text-slate-400">{place.displayName}</span>
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="border-t border-white/10 px-2.5 py-1 text-[10px] text-slate-400">
+                        {ar ? 'البحث: ' : 'Search: '}<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="underline hover:text-cyan-200">© OpenStreetMap contributors</a>
+                      </p>
+                    </div>
+                  )}
                   <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-1.5">
                     <label className={labelClass}>
                       <span>{ar ? 'خط العرض' : 'Latitude'}</span>

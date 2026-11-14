@@ -84,7 +84,7 @@ The user moves through six steps in order:
 
 **Location & Farm Boundary → Environmental Overview → Farm Information & Crops → Scenario Comparison → Risks & Trade-offs → Decision Summary & Report**
 
-1. **Select the location.** Click a point on a satellite map or draw the farm boundary as a polygon. The boundary is validated (at least three points) and its area is calculated on a spherical Earth model. The area can also be entered in hectares or feddans.
+1. **Select the location.** Search for any place name worldwide, use **My location** (the browser asks for permission), type coordinates, click a point on a satellite map, or draw the farm boundary as a polygon. The boundary is validated (at least three points) and its area is calculated on a spherical Earth model. The area can also be entered in hectares or feddans.
 2. **Collect environmental data.** The application requests climate, vegetation, evapotranspiration and soil data for the farm point (see [Data sources](#data-sources)).
 3. **Process the data.** A shared request layer handles time-outs, retries and caching. Units are converted, fill values are removed, low-quality NDVI pixels are filtered, and missing or incomplete months are marked instead of being filled.
 4. **Describe the crops.** Enter the existing rotation and two alternatives from a catalog of ten field crops. Each crop has published FAO values: indicative seasonal water need, growing period and optimum temperature range, plus its plant family.
@@ -123,6 +123,7 @@ All data are requested directly from public services in the browser. There is no
 | SSURGO soil survey through [Soil Data Access](https://sdmdataaccess.nrcs.usda.gov/) | USDA NRCS | Soil properties | United States only |
 | FAO reference tables | FAO | Crop water needs, growing periods, crop coefficients, temperature ranges, yield response | General values |
 | Esri World Imagery | Esri | Background map only (not used in calculations) | Global |
+| Nominatim place search | OpenStreetMap | Finding a place by name and naming the "My location" point (not used in calculations) | Global |
 
 Other NASA missions such as SMAP, GPM, Landsat, GRACE-FO and ECOSTRESS are described in the in-app guide for information only. They are **not** connected as data sources.
 
@@ -215,7 +216,8 @@ tests/                 Unit tests
 | Mohamed Gehad Hussien Metwali | Front-end development, UI/UX and testing |
 | Ahmed Mohamed Salah El-Din Abdul Khaleq | Front-end development, testing and localization |
 | Ibrahim Mohamed Asker | Agricultural research |
-| Ahmed Elsaeed Abdullah | Agricultural research & Presenting |
+| Shehab Medhat Mohamed Younis | Agricultural research & Presenting |
+
 
 ## References
 
